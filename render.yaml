@@ -1,0 +1,34 @@
+﻿services:
+  - type: web
+    name: smark-connect
+    runtime: docker
+    dockerfilePath: ./Dockerfile
+    plan: starter
+    healthCheckPath: /api/health
+    envVars:
+      - key: NODE_ENV
+        value: production
+      - key: PORT
+        value: 3000
+      - key: HOSTNAME
+        value: 0.0.0.0
+      - key: DATABASE_URL
+        fromDatabase:
+          name: smark-connect-db
+          property: connectionString
+      - key: AUTH_SECRET
+        generateValue: true
+      - key: SECRET_ENCRYPTION_KEY
+        sync: false
+      - key: AUTH_URL
+        sync: false
+      - key: ADMIN_PASSWORD_HASH
+        sync: false
+      - key: PAGESPEED_INSIGHTS_API_KEY
+        sync: false
+
+databases:
+  - name: smark-connect-db
+    databaseName: smarkconnect
+    user: smarkconnect
+    plan: free

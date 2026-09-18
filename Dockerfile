@@ -43,6 +43,7 @@ RUN python3 -m venv /opt/smark-report-venv \
     && /opt/smark-report-venv/bin/pip install --no-cache-dir --upgrade pip \
     && /opt/smark-report-venv/bin/pip install --no-cache-dir -r requirements-report.txt
 
+ENV DATABASE_URL="postgresql://placeholder:placeholder@localhost:5432/placeholder?sslmode=disable"
 RUN test -f /app/prisma/schema.prisma
 RUN pnpm exec prisma generate --schema=/app/prisma/schema.prisma
 RUN pnpm build
