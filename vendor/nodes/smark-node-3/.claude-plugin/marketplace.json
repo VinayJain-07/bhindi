@@ -1,0 +1,14 @@
+{
+  "name": "social-media-skills",
+  "owner": {
+    "name": "Frank Heijdenrijk"
+  },
+  "plugins": [
+    {
+      "name": "social-media-skills",
+      "source": "./",
+      "description": "106 social media skills for AI agents \u2014 strategy, writing, video, design, platform growth, publishing, and analytics.",
+      "version": "1.0.1"
+    }
+  ]
+}

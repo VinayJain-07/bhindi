@@ -1,0 +1,4228 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Smark Connect - AI-Powered Marketing Intelligence</title>
+    <style>
+        /* Inter and Instrument Serif */
+        @import url('https://fonts.googleapis.com/css2?family=Instrument+Serif:ital@1&family=Inter:wght@400;500;600;700;800&display=swap');
+
+        :root {
+            --bg-dark: #0a0a0f;
+            --text-light: #f8fafc;
+            --text-muted: #cbd5e1;
+            --text-body: #e2e8f0;
+            --purple-main: #c084fc;
+            --purple-light: rgba(192, 132, 252, 0.25);
+            --purple-glow: #a855f7;
+            --purple-bright: #e9d5ff;
+            --card-bg: rgba(255, 255, 255, 0.03);
+            --card-border: rgba(255, 255, 255, 0.06);
+            --font-sans: 'Inter', sans-serif;
+            --font-serif: 'Instrument Serif', serif;
+        }
+
+        * {
+            box-sizing: border-box;
+            margin: 0;
+            padding: 0;
+        }
+
+        body {
+            background-color: var(--bg-dark);
+            color: var(--text-light);
+            font-family: var(--font-sans);
+            overflow-x: hidden;
+            -webkit-font-smoothing: antialiased;
+        }
+
+        /* Canvases & Neon Motion Layering */
+        #wave-canvas {
+            position: fixed;
+            top: 0;
+            left: 0;
+            width: 100vw;
+            height: 100vh;
+            pointer-events: none;
+            z-index: 0;
+            filter: blur(34px);
+            mix-blend-mode: screen;
+            opacity: 0.92;
+            transition: transform 0.1s ease-out;
+        }
+
+        #dot-canvas {
+            position: fixed;
+            top: 0;
+            left: 0;
+            width: 100vw;
+            height: 100vh;
+            pointer-events: none;
+            z-index: 2;
+            opacity: 1;
+        }
+
+        /* Ambient Motion & Ultra-Visible Particles */
+        .ambient-particles {
+            position: fixed;
+            top: 0;
+            left: 0;
+            width: 100vw;
+            height: 100vh;
+            pointer-events: none;
+            z-index: 3;
+            transition: transform 0.15s ease-out;
+        }
+
+        .particle {
+            position: absolute;
+            background: radial-gradient(circle, #ffffff 0%, #f3e8ff 35%, #c084fc 70%, rgba(168, 85, 247, 0.95) 100%);
+            border-radius: 50%;
+            box-shadow: 0 0 16px #c084fc, 0 0 32px #a855f7, 0 0 50px rgba(168, 85, 247, 0.9);
+            pointer-events: none;
+            will-change: transform, opacity;
+            animation: floatParticle 16s infinite linear;
+        }
+
+        @keyframes floatParticle {
+            0% { transform: translateY(105vh) translateX(0) scale(0.8); opacity: 0; }
+            12% { opacity: 1; }
+            88% { opacity: 1; }
+            100% { transform: translateY(-10vh) translateX(140px) scale(1.15); opacity: 0; }
+        }
+
+        .hero-glow {
+            position: absolute;
+            top: 50%;
+            left: 50%;
+            transform: translate(-50%, -50%);
+            width: 60vw;
+            height: 60vw;
+            background: radial-gradient(circle, rgba(168, 85, 247, 0.2) 0%, rgba(139, 44, 224, 0.05) 45%, rgba(10, 10, 15, 0) 70%);
+            z-index: -1;
+            animation: pulseGlow 8s infinite alternate ease-in-out;
+            pointer-events: none;
+        }
+
+        @keyframes pulseGlow {
+            0% { opacity: 0.6; transform: translate(-50%, -50%) scale(0.9); }
+            100% { opacity: 1; transform: translate(-50%, -50%) scale(1.15); }
+        }
+
+        /* Content Wrapper */
+        .content-wrapper {
+            position: relative;
+            z-index: 2;
+        }
+
+        /* Typography & Readable Purple Text */
+        h1, h2, h3 {
+            font-weight: 700;
+            line-height: 1.1;
+        }
+
+        em {
+            font-family: var(--font-serif);
+            font-style: italic;
+            font-weight: 400;
+            color: #c084fc;
+            text-shadow: 0 0 16px rgba(192, 132, 252, 0.4);
+        }
+
+        .kicker {
+            font-size: 12px;
+            font-weight: 700;
+            letter-spacing: 0.12em;
+            text-transform: uppercase;
+            color: #e9d5ff;
+            background: rgba(168, 85, 247, 0.14);
+            border: 1px solid rgba(192, 132, 252, 0.35);
+            padding: 6px 16px;
+            border-radius: 999px;
+            margin-bottom: 24px;
+            display: inline-block;
+            backdrop-filter: blur(12px);
+            box-shadow: 0 0 16px rgba(168, 85, 247, 0.2);
+        }
+
+        p {
+            line-height: 1.6;
+            color: var(--text-muted);
+        }
+
+        /* Floating Megamenu Header & Multicolour Ring Logo */
+        header {
+            position: fixed;
+            top: 20px;
+            left: 50%;
+            transform: translateX(-50%);
+            width: min(1140px, calc(100% - 40px));
+            height: 64px;
+            padding: 0 24px;
+            display: flex;
+            justify-content: space-between;
+            align-items: center;
+            z-index: 1000;
+            background: rgba(15, 15, 25, 0.75);
+            backdrop-filter: blur(24px) saturate(180%);
+            border: 1px solid rgba(255, 255, 255, 0.12);
+            border-radius: 999px;
+            box-shadow: 0 16px 40px rgba(0, 0, 0, 0.4), 0 0 30px rgba(139, 44, 224, 0.15);
+            transition: all 0.3s ease;
+        }
+
+        header.scrolled {
+            background: rgba(10, 10, 15, 0.88);
+            border-color: rgba(139, 44, 224, 0.35);
+            box-shadow: 0 20px 50px rgba(0, 0, 0, 0.6), 0 0 40px rgba(139, 44, 224, 0.25);
+        }
+
+        .logo {
+            display: flex;
+            align-items: center;
+            gap: 12px;
+            font-weight: 750;
+            font-size: 17px;
+            text-decoration: none;
+            color: white;
+            letter-spacing: -0.02em;
+        }
+
+        .logo-mark {
+            width: 28px;
+            height: 28px;
+            border-radius: 50%;
+            background: conic-gradient(#537cff, #32bd79, #efc642, #ee6a42, #e8447a, #8b2ce0, #537cff);
+            display: grid;
+            place-items: center;
+            box-shadow: 0 0 16px rgba(139, 44, 224, 0.4);
+            position: relative;
+            flex-shrink: 0;
+        }
+
+        .logo-mark::after {
+            content: "";
+            width: 12px;
+            height: 12px;
+            border-radius: 50%;
+            background: #0a0a0f;
+        }
+
+        .nav-links {
+            display: flex;
+            gap: 16px;
+            align-items: center;
+        }
+
+        .nav-link {
+            color: rgba(255, 255, 255, 0.75);
+            text-decoration: none;
+            font-size: 14px;
+            font-weight: 500;
+            transition: all 0.2s ease;
+            display: flex;
+            align-items: center;
+            gap: 4px;
+            padding: 8px 14px;
+            border-radius: 999px;
+        }
+
+        .nav-link:hover {
+            color: white;
+            background: rgba(255, 255, 255, 0.08);
+        }
+
+        /* Floating Megamenu Dropdown */
+        .megamenu-item {
+            position: relative;
+        }
+
+        .megamenu-dropdown {
+            position: absolute;
+            top: 100%;
+            left: 50%;
+            transform: translateX(-50%) translateY(8px);
+            width: 560px;
+            background: #0d0d15;
+            border: 1px solid rgba(139, 44, 224, 0.35);
+            border-radius: 20px;
+            padding: 20px;
+            display: grid;
+            grid-template-columns: 1fr 1fr;
+            gap: 16px;
+            box-shadow: 0 24px 60px rgba(0, 0, 0, 0.7), 0 0 35px rgba(139, 44, 224, 0.2);
+            opacity: 0;
+            pointer-events: none;
+            transition: all 0.25s ease;
+            z-index: 1001;
+        }
+
+        .megamenu-item:hover .megamenu-dropdown {
+            opacity: 1;
+            pointer-events: auto;
+            transform: translateX(-50%) translateY(14px);
+        }
+
+        .megamenu-title {
+            font-size: 10px;
+            font-weight: 700;
+            letter-spacing: 0.08em;
+            color: #d89af5;
+            margin-bottom: 10px;
+            padding-left: 6px;
+            text-transform: uppercase;
+        }
+
+        .megamenu-link {
+            display: flex;
+            align-items: flex-start;
+            gap: 10px;
+            padding: 8px;
+            border-radius: 12px;
+            text-decoration: none;
+            transition: background 0.2s ease;
+        }
+
+        .megamenu-link:hover {
+            background: rgba(255, 255, 255, 0.06);
+        }
+
+        .mm-icon {
+            width: 30px;
+            height: 30px;
+            border-radius: 8px;
+            background: rgba(139, 44, 224, 0.15);
+            border: 1px solid rgba(139, 44, 224, 0.3);
+            color: #d89af5;
+            display: grid;
+            place-items: center;
+            flex-shrink: 0;
+        }
+
+        .megamenu-link strong {
+            display: block;
+            font-size: 13px;
+            color: white;
+            margin-bottom: 2px;
+        }
+
+        .megamenu-link p {
+            font-size: 11px;
+            color: var(--text-muted);
+            margin: 0;
+            line-height: 1.3;
+        }
+
+        /* Buttons */
+        .btn {
+            display: inline-flex;
+            align-items: center;
+            justify-content: center;
+            height: 52px;
+            padding: 0 28px;
+            border-radius: 999px;
+            font-weight: 600;
+            font-size: 15px;
+            text-decoration: none;
+            transition: all 0.2s ease;
+            cursor: pointer;
+            border: none;
+        }
+
+        .btn-primary {
+            background: white;
+            color: black;
+        }
+
+        .btn-primary:hover {
+            transform: translateY(-2px);
+            box-shadow: 0 10px 20px rgba(255, 255, 255, 0.1);
+        }
+
+        .btn-secondary {
+            background: rgba(255, 255, 255, 0.1);
+            color: white;
+            backdrop-filter: blur(10px);
+        }
+
+        .btn-secondary:hover {
+            background: rgba(255, 255, 255, 0.15);
+        }
+
+        /* Layout & Sections */
+        section {
+            padding: 120px 20px;
+            max-width: 1200px;
+            margin: 0 auto;
+        }
+
+        .section-header {
+            text-align: center;
+            margin-bottom: 80px;
+            max-width: 700px;
+            margin-inline: auto;
+        }
+
+        .section-header h2 {
+            font-size: clamp(36px, 4.5vw, 60px);
+            letter-spacing: -0.02em;
+            margin-bottom: 24px;
+        }
+
+        .section-header p {
+            font-size: 18px;
+        }
+
+        /* Hero */
+        .hero {
+            min-height: 100vh;
+            display: flex;
+            flex-direction: column;
+            justify-content: flex-start;
+            align-items: center;
+            text-align: center;
+            padding-top: max(140px, calc(50vh - 180px));
+            position: relative;
+        }
+
+        .hero .kicker {
+            margin-bottom: 12px;
+        }
+
+        .hero h1 {
+            font-size: clamp(44px, 5.5vw, 76px);
+            letter-spacing: -0.03em;
+            line-height: 1.04;
+            text-align: center;
+            max-width: 840px;
+            margin: 4px auto 28px;
+            will-change: transform;
+        }
+
+        .hero h1 em {
+            color: var(--purple-main);
+            font-style: italic;
+        }
+
+        .hero .subtitle {
+            font-size: 20px;
+            max-width: 650px;
+            margin: 0 auto 48px;
+            color: rgba(255, 255, 255, 0.75);
+        }
+
+        .hero-ctas {
+            display: flex;
+            gap: 16px;
+            justify-content: center;
+            margin-bottom: 60px;
+        }
+
+        /* Minimal Sleek Search Bar */
+        .search-bar {
+            width: 100%;
+            max-width: 640px;
+            margin: 0 auto 48px;
+            position: relative;
+        }
+
+        .search-bar-inner {
+            display: flex;
+            align-items: center;
+            background: rgba(255, 255, 255, 0.06);
+            border: 1px solid rgba(255, 255, 255, 0.12);
+            border-radius: 999px;
+            padding: 6px 6px 6px 20px;
+            backdrop-filter: blur(16px);
+            transition: border-color 0.3s ease, box-shadow 0.3s ease;
+        }
+
+        .search-bar-inner:focus-within {
+            border-color: rgba(139, 44, 224, 0.5);
+            box-shadow: 0 0 30px rgba(139, 44, 224, 0.2);
+        }
+
+        .search-bar-inner svg {
+            flex-shrink: 0;
+            color: rgba(255, 255, 255, 0.5);
+            margin-right: 12px;
+        }
+
+        .search-bar-inner input {
+            flex: 1;
+            background: none;
+            border: none;
+            outline: none;
+            color: white;
+            font-family: var(--font-sans);
+            font-size: 16px;
+            padding: 14px 0;
+        }
+
+        .search-bar-inner input::placeholder {
+            color: rgba(255, 255, 255, 0.4);
+        }
+
+        .search-bar-inner button {
+            flex-shrink: 0;
+            height: 48px;
+            padding: 0 26px;
+            border-radius: 999px;
+            border: none;
+            background: white;
+            color: black;
+            font-family: var(--font-sans);
+            font-weight: 600;
+            font-size: 14px;
+            cursor: pointer;
+            transition: all 0.2s ease;
+            white-space: nowrap;
+        }
+
+        .search-bar-inner button:hover {
+            transform: translateY(-1px);
+            background: #f0f0f0;
+        }
+
+        .search-bar-hint {
+            font-size: 13px;
+            color: rgba(255, 255, 255, 0.5);
+            margin-top: 12px;
+            text-align: center;
+        }
+
+        .stitch-chip-btn {
+            display: inline-flex;
+            align-items: center;
+            gap: 6px;
+            background: rgba(255, 255, 255, 0.04);
+            border: 1px solid rgba(255, 255, 255, 0.08);
+            padding: 7px 16px;
+            border-radius: 999px;
+            font-size: 12px;
+            color: rgba(255, 255, 255, 0.7);
+            cursor: pointer;
+            transition: all 0.2s ease;
+        }
+
+        .stitch-chip-btn:hover {
+            background: rgba(255, 255, 255, 0.1);
+            border-color: rgba(255, 255, 255, 0.2);
+            color: white;
+        }
+
+        .search-bar-hint {
+            text-align: center;
+            font-size: 13px;
+            color: var(--text-muted);
+            margin-top: 12px;
+            opacity: 0.7;
+        }
+
+        .badges {
+            display: flex;
+            gap: 24px;
+            justify-content: center;
+            flex-wrap: wrap;
+        }
+
+        .badge {
+            display: flex;
+            align-items: center;
+            gap: 8px;
+            font-size: 14px;
+            color: var(--text-muted);
+        }
+
+        .badge svg {
+            color: var(--purple-main);
+        }
+
+        /* Proof Bar */
+        .proof-bar {
+            padding: 40px 20px;
+            text-align: center;
+            border-top: 1px solid var(--card-border);
+            border-bottom: 1px solid var(--card-border);
+            background: rgba(10, 10, 15, 0.3);
+            backdrop-filter: blur(10px);
+        }
+
+        .proof-bar p {
+            font-size: 16px;
+            font-weight: 500;
+            color: var(--text-light);
+            max-width: 800px;
+            margin: 0 auto;
+        }
+
+        /* Grids */
+        .grid {
+            display: grid;
+            grid-template-columns: repeat(3, 1fr);
+            gap: 24px;
+        }
+
+        /* Cards */
+        .card {
+            background: var(--card-bg);
+            border: 1px solid var(--card-border);
+            border-radius: 20px;
+            padding: 40px 32px;
+            backdrop-filter: blur(12px);
+            transition: transform 0.3s ease, border-color 0.3s ease;
+            will-change: transform;
+        }
+
+        .card:hover {
+            border-color: rgba(255, 255, 255, 0.18);
+        }
+
+        .card.featured {
+            background: linear-gradient(135deg, rgba(139, 44, 224, 0.15), rgba(10, 10, 15, 0));
+            border-color: rgba(139, 44, 224, 0.3);
+        }
+
+        .card-icon {
+            width: 48px;
+            height: 48px;
+            border-radius: 12px;
+            background: rgba(255, 255, 255, 0.05);
+            display: flex;
+            align-items: center;
+            justify-content: center;
+            margin-bottom: 24px;
+            color: var(--text-light);
+        }
+
+        .featured .card-icon {
+            background: var(--purple-main);
+            color: white;
+        }
+
+        .card h3 {
+            font-size: 20px;
+            margin-bottom: 12px;
+        }
+
+        .card-tag {
+            display: inline-block;
+            padding: 4px 10px;
+            border-radius: 999px;
+            background: rgba(255, 255, 255, 0.06);
+            border: 1px solid rgba(255, 255, 255, 0.1);
+            font-size: 11px;
+            font-weight: 600;
+            color: var(--text-muted);
+            letter-spacing: 0.05em;
+            text-transform: uppercase;
+            margin-bottom: 16px;
+        }
+
+        .featured .card-tag {
+            background: rgba(139, 44, 224, 0.2);
+            border-color: rgba(139, 44, 224, 0.4);
+            color: #d89af5;
+        }
+
+        .card-feature-list {
+            list-style: none;
+            padding: 0;
+            margin: 20px 0 0;
+            display: flex;
+            flex-direction: column;
+            gap: 10px;
+            border-top: 1px solid rgba(255, 255, 255, 0.06);
+            padding-top: 20px;
+        }
+
+        .card-feature-list li {
+            display: flex;
+            align-items: center;
+            gap: 10px;
+            font-size: 13px;
+            color: var(--text-muted);
+        }
+
+        .card-feature-list li svg {
+            color: var(--purple-main);
+            flex-shrink: 0;
+        }
+
+        .featured .card-feature-list li svg {
+            color: #d89af5;
+        }
+
+        .feature-subheading {
+            margin-top: 80px;
+            margin-bottom: 40px;
+            text-align: center;
+        }
+
+        .feature-subheading h3 {
+            font-size: 28px;
+            letter-spacing: -0.02em;
+        }
+
+        .feature-subheading p {
+            color: var(--text-muted);
+            font-size: 15px;
+            margin-top: 8px;
+        }
+
+        /* Bento Grid & Insights Section */
+        .insights-filters {
+            display: flex;
+            justify-content: center;
+            gap: 12px;
+            margin-bottom: 48px;
+            flex-wrap: wrap;
+        }
+
+        .filter-btn {
+            background: rgba(255, 255, 255, 0.04);
+            border: 1px solid rgba(255, 255, 255, 0.08);
+            color: var(--text-muted);
+            padding: 9px 22px;
+            border-radius: 999px;
+            font-size: 13px;
+            font-weight: 500;
+            cursor: pointer;
+            transition: all 0.25s cubic-bezier(0.16, 1, 0.3, 1);
+        }
+
+        .filter-btn:hover, .filter-btn.active {
+            background: rgba(139, 44, 224, 0.18);
+            border-color: rgba(139, 44, 224, 0.45);
+            color: #ffffff;
+            box-shadow: 0 4px 20px rgba(139, 44, 224, 0.25);
+        }
+
+        .insights-grid {
+            display: grid;
+            grid-template-columns: repeat(12, 1fr);
+            gap: 24px;
+        }
+
+        @media (max-width: 1024px) {
+            .insights-grid {
+                grid-template-columns: repeat(6, 1fr);
+            }
+        }
+
+        @media (max-width: 768px) {
+            .insights-grid {
+                grid-template-columns: 1fr;
+            }
+        }
+
+        .insight-card {
+            background: rgba(14, 15, 26, 0.7);
+            border: 1px solid rgba(255, 255, 255, 0.09);
+            border-radius: 24px;
+            padding: 32px;
+            backdrop-filter: blur(20px);
+            display: flex;
+            flex-direction: column;
+            justify-content: space-between;
+            transition: all 0.35s cubic-bezier(0.16, 1, 0.3, 1);
+            cursor: pointer;
+            position: relative;
+            overflow: hidden;
+        }
+
+        .insight-card::before {
+            content: '';
+            position: absolute;
+            top: 0;
+            left: 0;
+            right: 0;
+            height: 1px;
+            background: linear-gradient(90deg, transparent, rgba(255, 255, 255, 0.15), transparent);
+            opacity: 0;
+            transition: opacity 0.35s ease;
+        }
+
+        .insight-card:hover {
+            border-color: rgba(139, 44, 224, 0.35);
+            background: rgba(18, 19, 32, 0.85);
+            box-shadow: 0 12px 30px rgba(0, 0, 0, 0.4), 0 0 20px rgba(139, 44, 224, 0.08);
+        }
+
+        .insight-card:hover::before {
+            opacity: 1;
+        }
+
+        /* Bento Grid Tile Sizes */
+        .tile-hero {
+            grid-column: span 8;
+            background: linear-gradient(135deg, rgba(22, 20, 38, 0.85) 0%, rgba(12, 13, 22, 0.8) 100%);
+            border-color: rgba(139, 44, 224, 0.25);
+            padding: 38px 40px;
+        }
+
+        .tile-tall {
+            grid-column: span 4;
+            grid-row: span 2;
+            background: linear-gradient(180deg, rgba(16, 17, 28, 0.8) 0%, rgba(10, 10, 18, 0.85) 100%);
+        }
+
+        .tile-wide {
+            grid-column: span 8;
+            background: linear-gradient(135deg, rgba(16, 17, 30, 0.8) 0%, rgba(12, 14, 24, 0.85) 100%);
+        }
+
+        .tile-standard {
+            grid-column: span 4;
+        }
+
+        @media (max-width: 1024px) {
+            .tile-hero, .tile-wide, .tile-tall, .tile-standard {
+                grid-column: span 6;
+                grid-row: span 1;
+            }
+        }
+
+        @media (max-width: 768px) {
+            .tile-hero, .tile-wide, .tile-tall, .tile-standard {
+                grid-column: span 1;
+                grid-row: span 1;
+                padding: 24px;
+            }
+        }
+
+        .insight-header {
+            display: flex;
+            align-items: center;
+            justify-content: space-between;
+            margin-bottom: 20px;
+            flex-wrap: wrap;
+            gap: 10px;
+        }
+
+        .insight-category {
+            font-size: 10px;
+            font-weight: 700;
+            letter-spacing: 0.1em;
+            text-transform: uppercase;
+            color: #e2e8f0;
+            background: rgba(255, 255, 255, 0.06);
+            padding: 4px 12px;
+            border-radius: 999px;
+            border: 1px solid rgba(255, 255, 255, 0.12);
+        }
+
+        /* Subtle Non-Neon Colors - Glass Slate & Soft Accent Tones */
+        .insight-metric {
+            font-size: 11px;
+            font-weight: 600;
+            letter-spacing: 0.03em;
+            color: #cbd5e1;
+            background: rgba(255, 255, 255, 0.05);
+            padding: 4px 12px;
+            border-radius: 999px;
+            border: 1px solid rgba(255, 255, 255, 0.12);
+            backdrop-filter: blur(8px);
+        }
+
+        .insight-metric.purple {
+            color: #d89af5;
+            background: rgba(139, 44, 224, 0.12);
+            border-color: rgba(139, 44, 224, 0.28);
+        }
+
+        .insight-metric.blue {
+            color: #93c5fd;
+            background: rgba(59, 130, 246, 0.12);
+            border-color: rgba(59, 130, 246, 0.25);
+        }
+
+        .insight-card h3 {
+            font-size: 20px;
+            font-weight: 700;
+            line-height: 1.35;
+            margin-bottom: 14px;
+            color: #ffffff;
+            letter-spacing: -0.01em;
+        }
+
+        .tile-hero h3 {
+            font-size: 26px;
+        }
+
+        .insight-card p {
+            font-size: 14px;
+            line-height: 1.65;
+            color: #94a3b8;
+            margin-bottom: 24px;
+        }
+
+        /* Functional Telemetry / Feature Boxes */
+        .tile-preview-box {
+            background: rgba(10, 10, 16, 0.6);
+            border: 1px solid rgba(255, 255, 255, 0.07);
+            border-radius: 16px;
+            padding: 16px 20px;
+            margin-bottom: 24px;
+            display: flex;
+            flex-direction: column;
+            gap: 10px;
+        }
+
+        .telemetry-row {
+            display: flex;
+            align-items: center;
+            justify-content: space-between;
+            font-size: 12px;
+            font-family: monospace;
+        }
+
+        .telemetry-label {
+            color: rgba(255, 255, 255, 0.5);
+        }
+
+        .telemetry-val {
+            color: #e2e8f0;
+            font-weight: 600;
+        }
+
+        .telemetry-bar-bg {
+            height: 4px;
+            width: 100%;
+            background: rgba(255, 255, 255, 0.08);
+            border-radius: 2px;
+            overflow: hidden;
+        }
+
+        .telemetry-bar-fill {
+            height: 100%;
+            background: linear-gradient(90deg, #8b2ce0, #a78bfa);
+            border-radius: 2px;
+        }
+
+        .insight-footer {
+            display: flex;
+            align-items: center;
+            justify-content: space-between;
+            border-top: 1px solid rgba(255, 255, 255, 0.07);
+            padding-top: 18px;
+            margin-top: auto;
+            font-size: 13px;
+            color: #64748b;
+        }
+
+        .insight-read-more {
+            color: #e2e8f0;
+            font-weight: 600;
+            display: flex;
+            align-items: center;
+            gap: 6px;
+            transition: all 0.25s ease;
+        }
+
+        .insight-card:hover .insight-read-more {
+            gap: 10px;
+            color: white;
+        }
+
+        /* Insight Modal */
+        .modal-overlay {
+            position: fixed;
+            top: 0;
+            left: 0;
+            width: 100vw;
+            height: 100vh;
+            background: rgba(5, 5, 10, 0.85);
+            backdrop-filter: blur(16px);
+            z-index: 9999;
+            display: flex;
+            align-items: center;
+            justify-content: center;
+            opacity: 0;
+            pointer-events: none;
+            transition: opacity 0.3s ease;
+            padding: 20px;
+        }
+
+        .modal-overlay.active {
+            opacity: 1;
+            pointer-events: auto;
+        }
+
+        .modal-content {
+            background: #0d0d15;
+            border: 1px solid rgba(139, 44, 224, 0.4);
+            border-radius: 24px;
+            width: min(840px, 100%);
+            max-height: 85vh;
+            overflow-y: auto;
+            padding: 48px;
+            position: relative;
+            box-shadow: 0 24px 60px rgba(0, 0, 0, 0.6);
+            color: var(--text-light);
+        }
+
+        .modal-close {
+            position: absolute;
+            top: 24px;
+            right: 24px;
+            background: rgba(255, 255, 255, 0.08);
+            border: 1px solid rgba(255, 255, 255, 0.15);
+            color: white;
+            width: 40px;
+            height: 40px;
+            border-radius: 50%;
+            display: flex;
+            align-items: center;
+            justify-content: center;
+            cursor: pointer;
+            font-size: 20px;
+            transition: all 0.2s ease;
+        }
+
+        .modal-close:hover {
+            background: rgba(255, 255, 255, 0.2);
+            transform: scale(1.05);
+        }
+
+        .modal-body h2 {
+            font-size: 28px;
+            margin: 16px 0;
+            line-height: 1.3;
+            color: white;
+        }
+
+        .modal-meta {
+            display: flex;
+            gap: 16px;
+            align-items: center;
+            font-size: 13px;
+            color: var(--text-muted);
+            margin-bottom: 28px;
+            padding-bottom: 16px;
+            border-bottom: 1px solid rgba(255, 255, 255, 0.08);
+        }
+
+        .modal-takeaways {
+            background: rgba(139, 44, 224, 0.1);
+            border: 1px solid rgba(139, 44, 224, 0.3);
+            border-radius: 16px;
+            padding: 24px;
+            margin: 24px 0;
+        }
+
+        .modal-takeaways h4 {
+            color: #d89af5;
+            margin-bottom: 12px;
+            font-size: 16px;
+        }
+
+        .modal-takeaways ul {
+            padding-left: 20px;
+            display: flex;
+            flex-direction: column;
+            gap: 8px;
+            font-size: 14px;
+        }
+
+        /* Minimal & Subtle Comparison Matrix Section */
+        .comparison-table-wrapper {
+            width: 100%;
+            overflow-x: auto;
+            border-radius: 20px;
+            border: 1px solid rgba(255, 255, 255, 0.08);
+            background: rgba(12, 12, 18, 0.5);
+            backdrop-filter: blur(16px);
+            margin-top: 48px;
+            box-shadow: 0 16px 40px rgba(0, 0, 0, 0.3);
+        }
+
+        .comparison-table {
+            width: 100%;
+            border-collapse: collapse;
+            text-align: left;
+            font-size: 14px;
+            min-width: 900px;
+        }
+
+        .comparison-table th, .comparison-table td {
+            padding: 16px 22px;
+            border-bottom: 1px solid rgba(255, 255, 255, 0.05);
+        }
+
+        .comparison-table th {
+            font-size: 13px;
+            font-weight: 600;
+            color: rgba(255, 255, 255, 0.7);
+            background: rgba(255, 255, 255, 0.02);
+            text-transform: uppercase;
+            letter-spacing: 0.06em;
+        }
+
+        .comparison-table th.highlight-col {
+            background: rgba(139, 44, 224, 0.1);
+            border-left: 1px solid rgba(255, 255, 255, 0.1);
+            border-right: 1px solid rgba(255, 255, 255, 0.1);
+            color: #ffffff;
+            position: relative;
+        }
+
+        .comparison-table td {
+            color: #cbd5e1;
+        }
+
+        .comparison-table td.highlight-col {
+            background: rgba(139, 44, 224, 0.04);
+            border-left: 1px solid rgba(255, 255, 255, 0.06);
+            border-right: 1px solid rgba(255, 255, 255, 0.06);
+            font-weight: 500;
+            color: #ffffff;
+        }
+
+        .comparison-table tr:last-child td {
+            border-bottom: none;
+        }
+
+        .comparison-table tr:hover td {
+            background: rgba(255, 255, 255, 0.02);
+        }
+
+        .comparison-table tr:hover td.highlight-col {
+            background: rgba(139, 44, 224, 0.08);
+        }
+
+        .feature-check {
+            display: inline-flex;
+            align-items: center;
+            gap: 6px;
+            color: #a7f3d0;
+            font-weight: 500;
+            font-size: 13px;
+        }
+
+        .feature-dash, .feature-cross {
+            display: inline-flex;
+            align-items: center;
+            gap: 4px;
+            color: #fca5a5;
+            font-size: 13px;
+            opacity: 0.8;
+        }
+
+        .feature-basic {
+            color: #94a3b8;
+            font-size: 13px;
+        }
+
+        .feature-ai {
+            display: inline-flex;
+            align-items: center;
+            gap: 6px;
+            color: #ffffff;
+            font-size: 13px;
+            font-weight: 500;
+        }
+
+        .smark-badge-header {
+            display: flex;
+            align-items: center;
+            justify-content: space-between;
+            gap: 8px;
+        }
+
+        .smark-winner-tag {
+            background: rgba(255, 255, 255, 0.1);
+            border: 1px solid rgba(255, 255, 255, 0.15);
+            color: #ffffff;
+            font-size: 10px;
+            padding: 2px 8px;
+            border-radius: 4px;
+            font-weight: 600;
+            letter-spacing: 0.05em;
+        }
+
+        /* Paradigm Shift & 8-Layer Synthesis Section */
+        .paradigm-banner {
+            background: linear-gradient(135deg, rgba(139, 44, 224, 0.12), rgba(10, 10, 15, 0.6));
+            border: 1px solid rgba(139, 44, 224, 0.3);
+            border-radius: 28px;
+            padding: 56px 48px;
+            margin-bottom: 60px;
+            backdrop-filter: blur(16px);
+            position: relative;
+            overflow: hidden;
+        }
+
+        .paradigm-grid {
+            display: grid;
+            grid-template-columns: repeat(3, 1fr);
+            gap: 28px;
+            margin-top: 40px;
+        }
+
+        @media (max-width: 900px) {
+            .paradigm-grid {
+                grid-template-columns: 1fr;
+            }
+        }
+
+        .paradigm-card {
+            background: rgba(255, 255, 255, 0.03);
+            border: 1px solid rgba(255, 255, 255, 0.08);
+            border-radius: 20px;
+            padding: 32px;
+            transition: all 0.3s ease;
+        }
+
+        .paradigm-card:hover {
+            border-color: rgba(139, 44, 224, 0.4);
+            background: rgba(255, 255, 255, 0.05);
+        }
+
+        .paradigm-num {
+            font-family: var(--font-serif);
+            font-size: 32px;
+            color: #d89af5;
+            margin-bottom: 16px;
+        }
+
+        .paradigm-card h3 {
+            font-size: 20px;
+            margin-bottom: 12px;
+            color: white;
+            letter-spacing: -0.01em;
+        }
+
+        .paradigm-card p {
+            font-size: 14px;
+            line-height: 1.65;
+            color: var(--text-muted);
+        }
+
+        /* 8-Layer Architecture Grid */
+        .layer-architecture {
+            margin-top: 48px;
+            display: grid;
+            grid-template-columns: repeat(4, 1fr);
+            gap: 16px;
+        }
+
+        @media (max-width: 900px) {
+            .layer-architecture {
+                grid-template-columns: repeat(2, 1fr);
+            }
+        }
+
+        @media (max-width: 550px) {
+            .layer-architecture {
+                grid-template-columns: 1fr;
+            }
+        }
+
+        .layer-box {
+            background: rgba(10, 10, 15, 0.7);
+            border: 1px solid rgba(255, 255, 255, 0.08);
+            border-radius: 16px;
+            padding: 20px;
+            transition: all 0.25s ease;
+        }
+
+        .layer-box:hover {
+            border-color: rgba(139, 44, 224, 0.5);
+            background: rgba(139, 44, 224, 0.1);
+        }
+
+        .layer-badge {
+            font-size: 10px;
+            font-weight: 700;
+            letter-spacing: 0.1em;
+            color: #d89af5;
+            text-transform: uppercase;
+            margin-bottom: 8px;
+        }
+
+        .layer-box h4 {
+            font-size: 15px;
+            color: white;
+            margin-bottom: 6px;
+        }
+
+        .layer-box p {
+            font-size: 12px;
+            color: var(--text-muted);
+            line-height: 1.5;
+        }
+
+        /* ==========================================================================
+           COMMAND CENTER BLUEPRINT & VERTICAL SCROLL PIPELINE STYLES
+           ========================================================================== */
+        .command-center-flow-section {
+            padding: 60px 0 100px;
+            position: relative;
+            max-width: 1300px;
+            margin: 0 auto;
+        }
+
+        .blueprint-scroll-track {
+            position: relative;
+            min-height: 220vh;
+        }
+
+        .blueprint-sticky-container {
+            position: sticky;
+            top: 85px;
+            width: 100%;
+            background: radial-gradient(ellipse at 50% 0%, rgba(20, 22, 38, 0.95), rgba(10, 10, 15, 0.98));
+            border: 1px solid rgba(139, 44, 224, 0.35);
+            border-radius: 28px;
+            padding: 24px;
+            backdrop-filter: blur(24px) saturate(180%);
+            box-shadow: 0 30px 90px rgba(0, 0, 0, 0.8), 0 0 50px rgba(139, 44, 224, 0.2);
+            overflow: hidden;
+            transition: all 0.3s ease;
+        }
+
+        .blueprint-header-bar {
+            display: flex;
+            align-items: center;
+            justify-content: space-between;
+            gap: 16px;
+            padding-bottom: 16px;
+            border-bottom: 1px solid rgba(255, 255, 255, 0.1);
+            margin-bottom: 20px;
+            flex-wrap: wrap;
+        }
+
+        .blueprint-logo {
+            display: flex;
+            align-items: center;
+            gap: 10px;
+            font-weight: 750;
+            font-size: 15px;
+            color: white;
+        }
+
+        .blueprint-timeline-steps {
+            display: flex;
+            align-items: center;
+            gap: 6px;
+            background: rgba(255, 255, 255, 0.04);
+            border: 1px solid rgba(255, 255, 255, 0.08);
+            border-radius: 999px;
+            padding: 4px 8px;
+        }
+
+        .bp-step-btn {
+            display: flex;
+            align-items: center;
+            gap: 6px;
+            padding: 6px 12px;
+            border-radius: 999px;
+            border: none;
+            background: transparent;
+            color: rgba(255, 255, 255, 0.6);
+            font-family: var(--font-sans);
+            font-size: 11.5px;
+            font-weight: 600;
+            cursor: pointer;
+            transition: all 0.25s ease;
+        }
+
+        .bp-step-btn .bp-num {
+            font-family: var(--font-serif);
+            font-size: 14px;
+            color: #d89af5;
+        }
+
+        .bp-step-btn:hover {
+            color: white;
+            background: rgba(255, 255, 255, 0.06);
+        }
+
+        .bp-step-btn.active {
+            background: rgba(139, 44, 224, 0.3);
+            border: 1px solid rgba(139, 44, 224, 0.5);
+            color: white;
+            box-shadow: 0 0 15px rgba(139, 44, 224, 0.3);
+        }
+
+        .bp-connector {
+            width: 14px;
+            height: 1px;
+            background: rgba(255, 255, 255, 0.15);
+        }
+
+        .blueprint-status-tag {
+            display: flex;
+            align-items: center;
+            gap: 8px;
+            font-size: 10.5px;
+            font-family: monospace;
+            color: #38bdf8;
+            background: rgba(56, 189, 248, 0.1);
+            border: 1px solid rgba(56, 189, 248, 0.3);
+            padding: 5px 12px;
+            border-radius: 999px;
+        }
+
+        .status-pulse-dot {
+            width: 6px;
+            height: 6px;
+            border-radius: 50%;
+            background: #38bdf8;
+            box-shadow: 0 0 8px #38bdf8;
+            animation: pulseFast 1.5s infinite;
+        }
+
+        .blueprint-main-canvas {
+            position: relative;
+            min-height: 480px;
+            width: 100%;
+        }
+
+        #blueprint-energy-canvas {
+            position: absolute;
+            top: 0;
+            left: 0;
+            width: 100%;
+            height: 100%;
+            pointer-events: none;
+            z-index: 1;
+        }
+
+        .blueprint-grid {
+            display: grid;
+            grid-template-columns: 1.15fr 0.85fr 1.35fr 1.05fr;
+            gap: 16px;
+            position: relative;
+            z-index: 2;
+            align-items: stretch;
+        }
+
+        @media (max-width: 1100px) {
+            .blueprint-grid {
+                grid-template-columns: 1fr 1fr;
+                gap: 20px;
+            }
+        }
+
+        @media (max-width: 700px) {
+            .blueprint-grid {
+                grid-template-columns: 1fr;
+            }
+        }
+
+        .bp-stage {
+            background: rgba(255, 255, 255, 0.02);
+            border: 1px solid rgba(255, 255, 255, 0.07);
+            border-radius: 20px;
+            padding: 16px;
+            display: flex;
+            flex-direction: column;
+            justify-content: space-between;
+            transition: all 0.4s cubic-bezier(0.16, 1, 0.3, 1);
+            opacity: 0.45;
+            transform: scale(0.98);
+        }
+
+        .bp-stage.active {
+            opacity: 1;
+            transform: scale(1);
+            border-color: rgba(139, 44, 224, 0.5);
+            background: rgba(255, 255, 255, 0.04);
+            box-shadow: 0 10px 30px rgba(0, 0, 0, 0.4), 0 0 25px rgba(139, 44, 224, 0.2);
+        }
+
+        .bp-stage-tag {
+            font-size: 10.5px;
+            font-weight: 700;
+            letter-spacing: 0.08em;
+            color: #ef4444;
+            text-transform: uppercase;
+        }
+
+        .bp-stage-subtag {
+            font-size: 10px;
+            color: rgba(255, 255, 255, 0.5);
+            margin-bottom: 12px;
+        }
+
+        .bp-stage-tag-center {
+            font-size: 10px;
+            font-weight: 700;
+            letter-spacing: 0.08em;
+            color: #d89af5;
+            text-transform: uppercase;
+            text-align: center;
+            margin-bottom: 12px;
+        }
+
+        .legacy-tools-scatter {
+            display: grid;
+            grid-template-columns: repeat(2, 1fr);
+            gap: 8px;
+            margin-bottom: 12px;
+            position: relative;
+        }
+
+        .tool-window {
+            background: rgba(12, 12, 20, 0.9);
+            border: 1px solid rgba(255, 255, 255, 0.1);
+            border-radius: 8px;
+            padding: 6px 8px;
+            font-size: 10px;
+            position: relative;
+            transition: transform 0.3s ease;
+        }
+
+        .bp-stage-1.active .tool-window {
+            /* Kept stationary for clean, calm interface */
+        }
+
+        .tool-win-header {
+            display: flex;
+            align-items: center;
+            gap: 4px;
+            font-size: 8.5px;
+            color: rgba(255, 255, 255, 0.5);
+            margin-bottom: 4px;
+            border-bottom: 1px solid rgba(255, 255, 255, 0.05);
+            padding-bottom: 3px;
+        }
+
+        .tool-dot {
+            width: 4px;
+            height: 4px;
+            border-radius: 50%;
+            background: rgba(255, 255, 255, 0.2);
+        }
+
+        .tool-dot.red { background: #ef4444; }
+
+        .heatmap-render {
+            height: 24px;
+            border-radius: 4px;
+            background: linear-gradient(135deg, rgba(239, 68, 68, 0.3), rgba(245, 158, 11, 0.2), rgba(59, 130, 246, 0.1));
+            position: relative;
+            overflow: hidden;
+        }
+
+        .heat-spot {
+            position: absolute;
+            border-radius: 50%;
+            filter: blur(4px);
+        }
+
+        .heat-spot.spot-1 { width: 14px; height: 14px; background: #ef4444; top: 2px; left: 8px; opacity: 0.85; }
+        .heat-spot.spot-2 { width: 10px; height: 10px; background: #f59e0b; top: 10px; right: 10px; opacity: 0.75; }
+
+        .tool-chip-label {
+            font-size: 8.5px;
+            font-weight: 700;
+            color: rgba(255, 255, 255, 0.7);
+            background: rgba(255, 255, 255, 0.06);
+            padding: 2px 5px;
+            border-radius: 4px;
+            margin-top: 3px;
+            display: inline-block;
+        }
+
+        .replay-player {
+            height: 22px;
+            background: rgba(0, 0, 0, 0.4);
+            border-radius: 4px;
+            display: flex;
+            align-items: center;
+            padding: 0 5px;
+        }
+
+        .replay-bar {
+            width: 100%;
+            height: 3px;
+            background: rgba(255, 255, 255, 0.1);
+            border-radius: 2px;
+            overflow: hidden;
+        }
+
+        .replay-fill {
+            width: 45%;
+            height: 100%;
+            background: #38bdf8;
+        }
+
+        .confused-marketer-card {
+            grid-column: span 2;
+            background: rgba(239, 68, 68, 0.08);
+            border: 1px solid rgba(239, 68, 68, 0.25);
+            border-radius: 10px;
+            padding: 8px 10px;
+            display: flex;
+            align-items: center;
+            gap: 10px;
+            margin-top: 2px;
+        }
+
+        .confused-avatar {
+            position: relative;
+            color: #ef4444;
+            flex-shrink: 0;
+        }
+
+        .confused-thoughts {
+            position: absolute;
+            top: -8px;
+            right: -8px;
+            background: #ef4444;
+            color: white;
+            font-weight: 800;
+            font-size: 9px;
+            padding: 1px 5px;
+            border-radius: 999px;
+            box-shadow: 0 0 8px rgba(239, 68, 68, 0.6);
+        }
+
+        .confused-marketer-card p {
+            font-size: 10px;
+            color: #fca5a5;
+            line-height: 1.3;
+            margin: 0;
+        }
+
+        .stage-bottom-copy {
+            display: flex;
+            gap: 8px;
+            margin-top: 10px;
+            border-top: 1px solid rgba(255, 255, 255, 0.06);
+            padding-top: 10px;
+        }
+
+        .stage-num-badge {
+            font-family: var(--font-serif);
+            font-size: 24px;
+            color: #ef4444;
+            line-height: 1;
+        }
+
+        .stage-copy-text h3 {
+            font-size: 12px;
+            color: white;
+            margin-bottom: 2px;
+        }
+
+        .stage-copy-text p {
+            font-size: 10px;
+            color: var(--text-muted);
+            line-height: 1.35;
+            margin: 0;
+        }
+
+        .funnel-container {
+            display: flex;
+            flex-direction: column;
+            align-items: center;
+            justify-content: center;
+            height: 100%;
+            min-height: 360px;
+            position: relative;
+        }
+
+        .funnel-label {
+            font-size: 10px;
+            font-weight: 700;
+            letter-spacing: 0.08em;
+            color: #38bdf8;
+            text-transform: uppercase;
+            margin: 6px 0;
+        }
+
+        .funnel-svg-wrap {
+            width: 170px;
+            height: 240px;
+            position: relative;
+        }
+
+        .funnel-svg {
+            width: 100%;
+            height: 100%;
+        }
+
+        .funnel-laser-beam {
+            animation: laserDash 1.2s infinite linear;
+        }
+
+        @keyframes laserDash {
+            0% { stroke-dashoffset: 20; }
+            100% { stroke-dashoffset: 0; }
+        }
+
+        .synthesis-dual-layout {
+            display: flex;
+            flex-direction: column;
+            gap: 12px;
+            height: 100%;
+        }
+
+        .layer-stack-wrapper {
+            background: rgba(0, 0, 0, 0.3);
+            border-radius: 12px;
+            padding: 10px;
+            border: 1px solid rgba(255, 255, 255, 0.06);
+        }
+
+        .layer-stack-header {
+            font-size: 9.5px;
+            color: #d89af5;
+            margin-bottom: 8px;
+            display: flex;
+            flex-direction: column;
+            gap: 1px;
+        }
+
+        .layer-hdr-badge {
+            font-weight: 800;
+            letter-spacing: 0.08em;
+        }
+
+        .layers-vertical-list {
+            display: flex;
+            flex-direction: column;
+            gap: 4px;
+        }
+
+        .architecture-layer-item {
+            background: rgba(15, 15, 26, 0.85);
+            border: 1px solid rgba(255, 255, 255, 0.08);
+            border-radius: 6px;
+            padding: 4px 8px;
+            display: flex;
+            align-items: center;
+            gap: 8px;
+            transition: all 0.3s ease;
+        }
+
+        .bp-stage-3.active .architecture-layer-item {
+            border-color: rgba(139, 44, 224, 0.3);
+        }
+
+        .architecture-layer-item:hover, .architecture-layer-item.lit {
+            border-color: #00f0ff;
+            background: rgba(0, 240, 255, 0.1);
+            transform: translateX(3px);
+        }
+
+        .layer-badge-id {
+            font-size: 8.5px;
+            font-weight: 800;
+            color: #00f0ff;
+            background: rgba(0, 240, 255, 0.12);
+            padding: 1px 5px;
+            border-radius: 3px;
+            flex-shrink: 0;
+        }
+
+        .layer-info strong {
+            display: block;
+            font-size: 10.5px;
+            color: white;
+            line-height: 1.2;
+        }
+
+        .layer-info p {
+            font-size: 9px;
+            color: var(--text-muted);
+            margin: 0;
+            line-height: 1.2;
+        }
+
+        .social-chips {
+            margin-left: auto;
+            display: flex;
+            gap: 3px;
+        }
+
+        .social-chip {
+            font-size: 7.5px;
+            font-weight: 700;
+            padding: 1px 4px;
+            border-radius: 3px;
+        }
+
+        .social-chip.reddit { background: #ff4500; color: white; }
+        .social-chip.x-chip { background: #000; color: white; border: 1px solid #333; }
+
+        .ai-engine-core-wrap {
+            background: radial-gradient(circle at 50% 50%, rgba(139, 44, 224, 0.25), rgba(10, 10, 18, 0.8));
+            border: 1px solid rgba(139, 44, 224, 0.4);
+            border-radius: 12px;
+            padding: 10px;
+            text-align: center;
+            position: relative;
+            overflow: hidden;
+        }
+
+        .ai-core-brain-node {
+            position: relative;
+            display: flex;
+            flex-direction: column;
+            align-items: center;
+            margin-bottom: 6px;
+        }
+
+        .brain-icon-box {
+            width: 44px;
+            height: 44px;
+            border-radius: 50%;
+            background: rgba(139, 44, 224, 0.25);
+            border: 2px solid #00f0ff;
+            display: grid;
+            place-items: center;
+            box-shadow: 0 0 16px rgba(0, 240, 255, 0.5);
+            margin-bottom: 4px;
+            animation: pulseGlow 2.5s infinite alternate ease-in-out;
+        }
+
+        .ai-core-brain-node h4 {
+            font-size: 12px;
+            color: white;
+        }
+
+        .cmo-synthesis-copy {
+            display: flex;
+            align-items: flex-start;
+            gap: 6px;
+            text-align: left;
+            border-top: 1px solid rgba(255, 255, 255, 0.08);
+            padding-top: 8px;
+        }
+
+        .cmo-num {
+            font-family: var(--font-serif);
+            font-size: 22px;
+            color: #d89af5;
+            line-height: 1;
+        }
+
+        .cmo-text h5 {
+            font-size: 10.5px;
+            color: white;
+            margin-bottom: 2px;
+        }
+
+        .cmo-text p {
+            font-size: 9.5px;
+            color: var(--text-muted);
+            line-height: 1.25;
+            margin: 0;
+        }
+
+        .rec-section-header {
+            display: flex;
+            align-items: center;
+            justify-content: space-between;
+            margin-bottom: 10px;
+        }
+
+        .rec-header-badge {
+            font-size: 10px;
+            font-weight: 700;
+            letter-spacing: 0.06em;
+            color: #34d399;
+            text-transform: uppercase;
+        }
+
+        .rec-exec-avatar {
+            display: flex;
+            align-items: center;
+            gap: 4px;
+            font-size: 9px;
+            color: rgba(255, 255, 255, 0.7);
+        }
+
+        .exec-avatar-img {
+            width: 16px;
+            height: 16px;
+            border-radius: 50%;
+            background: linear-gradient(135deg, #8b2ce0, #38bdf8);
+        }
+
+        .recommendations-list {
+            display: flex;
+            flex-direction: column;
+            gap: 6px;
+            margin-bottom: 12px;
+        }
+
+        .rec-card {
+            background: rgba(15, 15, 26, 0.9);
+            border: 1px solid rgba(255, 255, 255, 0.08);
+            border-radius: 8px;
+            padding: 8px 10px;
+            display: flex;
+            align-items: center;
+            gap: 8px;
+            transition: all 0.3s ease;
+        }
+
+        .bp-stage-4.active .rec-card {
+            border-color: rgba(52, 211, 153, 0.35);
+        }
+
+        .rec-card:hover {
+            border-color: #34d399;
+            transform: translateX(3px);
+            background: rgba(52, 211, 153, 0.08);
+        }
+
+        .rec-card-num {
+            font-family: var(--font-serif);
+            font-size: 16px;
+            color: #34d399;
+            flex-shrink: 0;
+        }
+
+        .rec-card-content h4 {
+            font-size: 10.5px;
+            color: white;
+            margin-bottom: 1px;
+            line-height: 1.2;
+        }
+
+        .rec-card-content p {
+            font-size: 8.5px;
+            color: var(--text-muted);
+            margin: 0;
+            line-height: 1.2;
+        }
+
+        .rec-card-tag {
+            margin-left: auto;
+            font-size: 8px;
+            font-weight: 700;
+            padding: 1px 6px;
+            border-radius: 999px;
+            white-space: nowrap;
+            flex-shrink: 0;
+        }
+
+        .rec-card-tag.high { background: rgba(52, 211, 153, 0.15); color: #34d399; border: 1px solid rgba(52, 211, 153, 0.3); }
+        .rec-card-tag.perf { background: rgba(56, 189, 248, 0.15); color: #38bdf8; border: 1px solid rgba(56, 189, 248, 0.3); }
+        .rec-card-tag.geo { background: rgba(168, 85, 247, 0.15); color: #c084fc; border: 1px solid rgba(168, 85, 247, 0.3); }
+        .rec-card-tag.opt { background: rgba(245, 158, 11, 0.15); color: #fbbf24; border: 1px solid rgba(245, 158, 11, 0.3); }
+
+        .blueprint-action-bar {
+            border-top: 1px solid rgba(255, 255, 255, 0.08);
+            padding-top: 8px;
+        }
+
+        .blueprint-input-box {
+            position: relative;
+            display: flex;
+            align-items: center;
+            background: rgba(255, 255, 255, 0.04);
+            backdrop-filter: blur(20px);
+            -webkit-backdrop-filter: blur(20px);
+            border: 1px solid rgba(255, 255, 255, 0.15);
+            box-shadow: inset 0 1px 1px rgba(255, 255, 255, 0.22), 0 8px 30px rgba(0, 0, 0, 0.4);
+            border-radius: 14px;
+            padding: 3px 3px 3px 12px;
+            transition: all 0.3s ease;
+        }
+
+        .blueprint-input-box::before {
+            content: '';
+            position: absolute;
+            top: -1px;
+            left: -1px;
+            width: 10px;
+            height: 10px;
+            border-top: 2px solid #c084fc;
+            border-left: 2px solid #c084fc;
+            border-top-left-radius: 14px;
+            box-shadow: 0 0 10px rgba(192, 132, 252, 0.9), 0 0 2px #fff;
+            pointer-events: none;
+            transition: all 0.3s ease;
+        }
+
+        .blueprint-input-box::after {
+            content: '';
+            position: absolute;
+            bottom: -1px;
+            right: -1px;
+            width: 10px;
+            height: 10px;
+            border-bottom: 2px solid #38bdf8;
+            border-right: 2px solid #38bdf8;
+            border-bottom-right-radius: 14px;
+            box-shadow: 0 0 10px rgba(56, 189, 248, 0.9), 0 0 2px #fff;
+            pointer-events: none;
+            transition: all 0.3s ease;
+        }
+
+        .blueprint-input-box:focus-within {
+            box-shadow: inset 0 1px 1px rgba(255, 255, 255, 0.35), 0 0 25px rgba(168, 85, 247, 0.3);
+            border-color: rgba(168, 85, 247, 0.5);
+            background: rgba(255, 255, 255, 0.07);
+        }
+
+        .blueprint-input-box:focus-within::before {
+            box-shadow: 0 0 16px rgba(192, 132, 252, 1), 0 0 4px #fff;
+        }
+
+        .blueprint-input-box:focus-within::after {
+            box-shadow: 0 0 16px rgba(56, 189, 248, 1), 0 0 4px #fff;
+        }
+
+        .blueprint-input-box svg {
+            color: rgba(255, 255, 255, 0.5);
+            margin-right: 6px;
+            flex-shrink: 0;
+        }
+
+        .blueprint-input-box input {
+            flex: 1;
+            background: none;
+            border: none;
+            outline: none;
+            color: white;
+            font-family: var(--font-sans);
+            font-size: 10.5px;
+        }
+
+        .blueprint-input-box button {
+            height: 28px;
+            padding: 0 14px;
+            border-radius: 999px;
+            border: none;
+            background: linear-gradient(135deg, #8b2ce0, #6366f1);
+            color: white;
+            font-weight: 700;
+            font-size: 10px;
+            cursor: pointer;
+            transition: all 0.2s ease;
+            white-space: nowrap;
+            box-shadow: 0 4px 12px rgba(139, 44, 224, 0.35);
+        }
+
+        .blueprint-input-box button:hover {
+            background: linear-gradient(135deg, #9d3cf0, #7478f7);
+            transform: translateY(-1px);
+            box-shadow: 0 6px 16px rgba(139, 44, 224, 0.5);
+        }
+
+        .blueprint-input-hint {
+            font-size: 8.5px;
+            color: var(--text-muted);
+            text-align: center;
+            margin-top: 4px;
+            margin-bottom: 0;
+            opacity: 0.7;
+        }
+
+        /* Workflow */
+        .steps {
+            display: grid;
+            grid-template-columns: repeat(3, 1fr);
+            gap: 40px;
+        }
+
+        .step {
+            position: relative;
+        }
+
+        .step-number {
+            font-family: var(--font-serif);
+            font-size: 48px;
+            color: var(--purple-light);
+            margin-bottom: 16px;
+            display: block;
+        }
+
+        .step h3 {
+            font-size: 22px;
+            margin-bottom: 12px;
+        }
+
+        /* Agents */
+        .agent-grid {
+            display: grid;
+            grid-template-columns: repeat(auto-fill, minmax(200px, 1fr));
+            gap: 16px;
+        }
+
+        .agent-card {
+            background: var(--card-bg);
+            border: 1px solid var(--card-border);
+            border-radius: 16px;
+            padding: 24px;
+            display: flex;
+            align-items: center;
+            gap: 16px;
+            backdrop-filter: blur(12px);
+        }
+
+        .agent-chip {
+            width: 40px;
+            height: 40px;
+            border-radius: 8px;
+            background: rgba(139, 44, 224, 0.2);
+            color: var(--text-light);
+            display: flex;
+            align-items: center;
+            justify-content: center;
+            font-weight: 600;
+            font-size: 14px;
+        }
+
+        .agent-name {
+            font-weight: 500;
+        }
+
+        /* Outputs */
+        .output-list {
+            display: flex;
+            flex-direction: column;
+            gap: 20px;
+            max-width: 600px;
+            margin: 0 auto;
+        }
+
+        .output-item {
+            display: flex;
+            align-items: center;
+            gap: 16px;
+            padding: 24px;
+            background: var(--card-bg);
+            border: 1px solid var(--card-border);
+            border-radius: 16px;
+            font-size: 18px;
+            font-weight: 500;
+        }
+
+        /* Hero Motion Graphic & Technical Diagram HUD */
+        .hero-hud-container {
+            width: min(1000px, 100%);
+            margin: 48px auto 0;
+            background: rgba(12, 14, 24, 0.85);
+            backdrop-filter: blur(24px) saturate(180%);
+            border: 1px solid rgba(255, 255, 255, 0.12);
+            border-radius: 20px;
+            overflow: hidden;
+            box-shadow: 0 24px 70px rgba(0, 0, 0, 0.7), 0 0 40px rgba(139, 44, 224, 0.15);
+            position: relative;
+            text-align: left;
+        }
+
+        .hud-header {
+            display: flex;
+            align-items: center;
+            justify-content: space-between;
+            padding: 12px 20px;
+            background: rgba(255, 255, 255, 0.03);
+            border-bottom: 1px solid rgba(255, 255, 255, 0.08);
+            font-size: 11px;
+            font-family: monospace;
+            color: rgba(255, 255, 255, 0.6);
+        }
+
+        .hud-dots {
+            display: flex;
+            gap: 6px;
+        }
+
+        .hud-dot {
+            width: 10px;
+            height: 10px;
+            border-radius: 50%;
+        }
+
+        .hud-dot.red { background: #ff5f56; }
+        .hud-dot.yellow { background: #ffbd2e; }
+        .hud-dot.green { background: #27c93f; }
+
+        .hud-status {
+            display: flex;
+            align-items: center;
+            gap: 8px;
+            color: #34d399;
+        }
+
+        .hud-status-pulse {
+            width: 6px;
+            height: 6px;
+            border-radius: 50%;
+            background: #34d399;
+            box-shadow: 0 0 8px #34d399;
+            animation: pulseFast 1.5s infinite;
+        }
+
+        @keyframes pulseFast {
+            0%, 100% { opacity: 0.3; transform: scale(0.9); }
+            50% { opacity: 1; transform: scale(1.3); }
+        }
+
+        .hud-diagram-body {
+            position: relative;
+            height: 360px;
+            width: 100%;
+            background: radial-gradient(circle at 50% 50%, rgba(139, 44, 224, 0.12) 0%, rgba(10, 10, 15, 0.95) 75%);
+        }
+
+        #tech-diagram-canvas {
+            position: absolute;
+            top: 0;
+            left: 0;
+            width: 100%;
+            height: 100%;
+        }
+
+        .hud-stats-grid {
+            display: grid;
+            grid-template-columns: repeat(3, 1fr);
+            gap: 12px;
+            padding: 16px 20px;
+            background: rgba(255, 255, 255, 0.02);
+            border-top: 1px solid rgba(255, 255, 255, 0.08);
+        }
+
+        @media (max-width: 768px) {
+            .hud-stats-grid {
+                grid-template-columns: 1fr;
+            }
+            .hud-diagram-body {
+                height: 280px;
+            }
+        }
+
+        .hud-stat-card {
+            background: rgba(255, 255, 255, 0.03);
+            border: 1px solid rgba(255, 255, 255, 0.06);
+            border-radius: 12px;
+            padding: 12px 16px;
+            display: flex;
+            align-items: center;
+            gap: 12px;
+        }
+
+        .hud-stat-icon {
+            color: var(--purple-main);
+            flex-shrink: 0;
+        }
+
+        .hud-stat-info h5 {
+            font-size: 11px;
+            font-family: monospace;
+            color: rgba(255, 255, 255, 0.5);
+            margin-bottom: 2px;
+            text-transform: uppercase;
+        }
+
+        .hud-stat-info p {
+            font-size: 13px;
+            font-weight: 700;
+            color: #ffffff;
+            margin: 0;
+        }
+
+        /* FAQ Accordion */
+        .faq-accordion {
+            max-width: 800px;
+            margin: 0 auto;
+            display: flex;
+            flex-direction: column;
+            gap: 14px;
+        }
+
+        .faq-accordion-item {
+            background: rgba(15, 15, 24, 0.75);
+            border: 1px solid rgba(255, 255, 255, 0.08);
+            border-radius: 16px;
+            backdrop-filter: blur(12px);
+            overflow: hidden;
+            transition: border-color 0.3s ease, background 0.3s ease;
+        }
+
+        .faq-accordion-item.active {
+            border-color: rgba(139, 44, 224, 0.4);
+            background: rgba(20, 20, 32, 0.85);
+        }
+
+        .faq-accordion-header {
+            display: flex;
+            align-items: center;
+            justify-content: space-between;
+            padding: 22px 28px;
+            cursor: pointer;
+            user-select: none;
+        }
+
+        .faq-accordion-header h3 {
+            font-size: 17px;
+            font-weight: 600;
+            color: #ffffff;
+            margin: 0;
+        }
+
+        .faq-accordion-icon {
+            width: 28px;
+            height: 28px;
+            border-radius: 50%;
+            background: rgba(255, 255, 255, 0.06);
+            border: 1px solid rgba(255, 255, 255, 0.12);
+            display: grid;
+            place-items: center;
+            color: white;
+            font-size: 16px;
+            font-weight: 700;
+            transition: transform 0.3s ease, background 0.3s ease;
+            flex-shrink: 0;
+        }
+
+        .faq-accordion-item.active .faq-accordion-icon {
+            transform: rotate(45deg);
+            background: rgba(139, 44, 224, 0.3);
+            border-color: rgba(139, 44, 224, 0.5);
+            color: #d89af5;
+        }
+
+        .faq-accordion-content {
+            max-height: 0;
+            overflow: hidden;
+            transition: max-height 0.35s cubic-bezier(0.16, 1, 0.3, 1), padding 0.35s ease;
+            padding: 0 28px;
+        }
+
+        .faq-accordion-item.active .faq-accordion-content {
+            padding: 0 28px 24px;
+        }
+
+        .faq-accordion-content p {
+            font-size: 15px;
+            line-height: 1.65;
+            color: #cbd5e1;
+            margin: 0;
+        }
+
+        /* Footer */
+        footer {
+            padding: 40px 20px;
+            text-align: center;
+            border-top: 1px solid var(--card-border);
+            color: var(--text-muted);
+            font-size: 14px;
+        }
+
+        /* Responsive */
+        @media (max-width: 980px) {
+            .grid {
+                grid-template-columns: repeat(2, 1fr);
+            }
+            .steps {
+                grid-template-columns: 1fr;
+            }
+            .faq-grid {
+                grid-template-columns: 1fr;
+            }
+        }
+
+        @media (max-width: 650px) {
+            .grid {
+                grid-template-columns: 1fr;
+            }
+            .hero-ctas {
+                flex-direction: column;
+            }
+            .hero h1 {
+                font-size: 40px;
+            }
+            .section-header h2 {
+                font-size: 32px;
+            }
+        }
+        
+        @media (prefers-reduced-motion: reduce) {
+            #dot-canvas, #wave-canvas, .ambient-particles {
+                display: none;
+            }
+            .hero h1, .card {
+                transform: none !important;
+                transition: none !important;
+            }
+            .hero-glow {
+                animation: none;
+            }
+        }
+    </style>
+</head>
+<body>
+    <canvas id="dot-canvas"></canvas>
+    <canvas id="wave-canvas"></canvas>
+    
+    <div class="ambient-particles" id="particles">
+        <!-- Injected via JS -->
+    </div>
+
+    <div class="content-wrapper">
+        <header id="header">
+            <a href="index.html" class="logo">
+                <div class="logo-mark"></div>
+                Smark Connect
+            </a>
+            <nav class="nav-links">
+                <div class="megamenu-item">
+                    <a href="#features" class="nav-link">Features <svg width="12" height="12" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2.5"><path d="m6 9 6 6 6-6"/></svg></a>
+                    <div class="megamenu-dropdown">
+                        <div class="megamenu-column">
+                            <div class="megamenu-title">CORE INTELLIGENCE</div>
+                            <a href="#features" class="megamenu-link">
+                                <div class="mm-icon"><svg width="16" height="16" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2"><circle cx="11" cy="11" r="8"/><path d="m21 21-4.3-4.3"/></svg></div>
+                                <div><strong>Company Intelligence</strong><p>Offer stack & buyer objection ladder</p></div>
+                            </a>
+                            <a href="#features" class="megamenu-link">
+                                <div class="mm-icon"><svg width="16" height="16" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2"><path d="M3 3v18h18"/><path d="m19 9-5 5-4-4-3 3"/></svg></div>
+                                <div><strong>SEO & GEO Visibility</strong><p>ChatGPT, Perplexity & Gemini audit</p></div>
+                            </a>
+                            <a href="#features" class="megamenu-link">
+                                <div class="mm-icon"><svg width="16" height="16" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2"><path d="M16 21v-2a4 4 0 0 0-4-4H6a4 4 0 0 0-4 4v2"/><circle cx="9" cy="7" r="4"/></svg></div>
+                                <div><strong>Competitor Whitespace</strong><p>SWOT & positioning comparison</p></div>
+                            </a>
+                        </div>
+                        <div class="megamenu-column">
+                            <div class="megamenu-title">EXECUTION ENGINE</div>
+                            <a href="#features" class="megamenu-link">
+                                <div class="mm-icon"><svg width="16" height="16" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2"><polygon points="12 2 15.09 8.26 22 9.27 17 14.14 18.18 21.02 12 17.77 5.82 21.02 7 14.14 2 9.27 8.91 8.26 12 2"/></polygon></svg></div>
+                                <div><strong>AI CMO Synthesis</strong><p>30/60/90 day action roadmap</p></div>
+                            </a>
+                            <a href="#features" class="megamenu-link">
+                                <div class="mm-icon"><svg width="16" height="16" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2"><rect x="3" y="11" width="18" height="10" rx="2"/><circle cx="12" cy="5" r="2"/></svg></div>
+                                <div><strong>12 Specialist Agents</strong><p>Shared context execution team</p></div>
+                            </a>
+                            <a href="#features" class="megamenu-link">
+                                <div class="mm-icon"><svg width="16" height="16" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2"><circle cx="11" cy="11" r="8"/><path d="M11 8v6"/><path d="M8 11h6"/></svg></div>
+                                <div><strong>Live Intent Mining</strong><p>100-pt B2B lead discovery</p></div>
+                            </a>
+                        </div>
+                    </div>
+                </div>
+                <a href="#insights" class="nav-link">Insights</a>
+                <a href="#comparison" class="nav-link">Compare</a>
+                <a href="/pricing" class="nav-link">Pricing</a>
+                <a href="/docs" class="nav-link">Docs</a>
+            </nav>
+            <div style="display: flex; align-items: center; gap: 12px;">
+                <a href="/login" class="btn btn-secondary" style="height: 38px; padding: 0 18px; font-size: 13px; border-radius: 12px;">Sign In</a>
+                <a href="/onboarding" class="btn btn-primary" style="height: 38px; padding: 0 18px; font-size: 13px; border-radius: 12px; background: #9333ea; color: white; border: 1px solid #a855f7;">Get Started</a>
+            </div>
+        </header>
+
+        <section class="hero">
+            <div class="hero-glow"></div>
+            <span class="kicker">AI-POWERED MARKETING INTELLIGENCE</span>
+            <div class="hero-spacer" style="height: 28px;" aria-hidden="true"></div>
+            <h1 data-parallax="0.3">Your marketing has a new<br><em>command center.</em></h1>
+            <p class="subtitle" data-parallax="0.2">Transform raw web data into evidence-led growth priorities. One URL in, six connected analyses out.</p>
+            
+            <div class="search-bar" data-parallax="0.1">
+                <form class="search-bar-inner" id="hero-search-form" autocomplete="off">
+                    <svg width="20" height="20" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2"><circle cx="11" cy="11" r="8"/><path d="m21 21-4.3-4.3"/></svg>
+                    <input type="text" id="hero-url-input" placeholder="Enter your company website (e.g. stripe.com)" required />
+                    <button type="submit">Start analysis &rarr;</button>
+                </form>
+                <p class="search-bar-hint">Paste your company URL and we'll build your marketing intelligence</p>
+            </div>
+            
+            <div class="badges" data-parallax="0.05">
+                <div class="badge">
+                    <svg width="16" height="16" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2"><path d="M21 2v6h-6"/><path d="M3 12a9 9 0 1 0 9-9 9.75 9.75 0 0 0-6.74 2.74L3 8"/><path d="M3 3v6h6"/></svg>
+                    Bring your own AI key
+                </div>
+                <div class="badge">
+                    <svg width="16" height="16" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2"><path d="M12 22s8-4 8-10V5l-8-3-8 3v7c0 6 8 10 8 10z"/></svg>
+                    Evidence-led, not invented
+                </div>
+                <div class="badge">
+                    <svg width="16" height="16" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2"><rect x="3" y="11" width="18" height="11" rx="2" ry="2"/><path d="M7 11V7a5 5 0 0 1 10 0v4"/></svg>
+                    Your data stays yours
+                </div>
+            </div>
+
+            <!-- Technical Diagram & Complex Motion Graphics HUD -->
+            <div class="hero-hud-container" data-parallax="0.08">
+                <div class="hud-header">
+                    <div class="hud-dots">
+                        <span class="hud-dot red"></span>
+                        <span class="hud-dot yellow"></span>
+                        <span class="hud-dot green"></span>
+                    </div>
+                    <span>SMARK-ENGINE // MULTI-VECTOR INTELLIGENCE PIPELINE</span>
+                    <div class="hud-status">
+                        <span class="hud-status-pulse"></span>
+                        <span>LIVE SYNTHESIS</span>
+                    </div>
+                </div>
+
+                <div class="hud-diagram-body">
+                    <canvas id="tech-diagram-canvas"></canvas>
+                </div>
+
+                <div class="hud-stats-grid">
+                    <div class="hud-stat-card">
+                        <div class="hud-stat-icon">
+                            <svg width="20" height="20" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2"><path d="M13 2L3 14h9l-1 8 10-12h-9l1-8z"/></svg>
+                        </div>
+                        <div class="hud-stat-info">
+                            <h5>CRAWL & VECTOR DEPTH</h5>
+                            <p>8-Layer Information Capture</p>
+                        </div>
+                    </div>
+                    <div class="hud-stat-card">
+                        <div class="hud-stat-icon">
+                            <svg width="20" height="20" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2"><circle cx="12" cy="12" r="10"/><path d="M12 6v6l4 2"/></svg>
+                        </div>
+                        <div class="hud-stat-info">
+                            <h5>AI ENGINE LATENCY</h5>
+                            <p>&lt; 180s Full Scan</p>
+                        </div>
+                    </div>
+                    <div class="hud-stat-card">
+                        <div class="hud-stat-icon">
+                            <svg width="20" height="20" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2"><path d="M12 22s8-4 8-10V5l-8-3-8 3v7c0 6 8 10 8 10z"/></svg>
+                        </div>
+                        <div class="hud-stat-info">
+                            <h5>EVIDENCE RESOLUTION</h5>
+                            <p>100% Sourced Rationale</p>
+                        </div>
+                    </div>
+                </div>
+            </div>
+        </section>
+
+        <!-- The Agentic Command Center & Vertical Scroll Synthesis Engine -->
+        <section class="command-center-flow-section" id="paradigm">
+            <div class="section-header" data-parallax="0.1" style="margin-bottom: 48px;">
+                <span class="kicker">END-TO-END TELEMETRY TRANSFORMATION</span>
+                <h2>Your marketing has a new <em>command center.</em></h2>
+                <p>Move beyond dashboard fatigue. Stop interpreting. Command autonomous direction.</p>
+            </div>
+
+            <!-- Scroll Track Wrapper (determines scroll height for vertical animation reveal) -->
+            <div class="blueprint-scroll-track" id="blueprint-scroll-track">
+                <div class="blueprint-sticky-container">
+
+                    <!-- Top Navigation & Stage Indicator Bar -->
+                    <div class="blueprint-header-bar">
+                        <div class="blueprint-logo">
+                            <div class="logo-mark"></div>
+                            <span>Smark Connect Command Center</span>
+                        </div>
+                        <div class="blueprint-timeline-steps">
+                            <button class="bp-step-btn active" data-step="0">
+                                <span class="bp-num">01</span>
+                                <span class="bp-lbl">Disjointed Trackers</span>
+                            </button>
+                            <div class="bp-connector"></div>
+                            <button class="bp-step-btn" data-step="1">
+                                <span class="bp-num">02</span>
+                                <span class="bp-lbl">Crawl Funnel</span>
+                            </button>
+                            <div class="bp-connector"></div>
+                            <button class="bp-step-btn" data-step="2">
+                                <span class="bp-num">03</span>
+                                <span class="bp-lbl">8-Layer AI Synthesis</span>
+                            </button>
+                            <div class="bp-connector"></div>
+                            <button class="bp-step-btn" data-step="3">
+                                <span class="bp-num">04</span>
+                                <span class="bp-lbl">Ready Recommendations</span>
+                            </button>
+                        </div>
+                        <div class="blueprint-status-tag">
+                            <span class="status-pulse-dot"></span>
+                            <span id="blueprint-scroll-status-text">SCROLL TO UNIFY TELEMETRY</span>
+                        </div>
+                    </div>
+
+                    <!-- Main Interactive Canvas / Blueprint Layout Grid -->
+                    <div class="blueprint-main-canvas" id="blueprint-canvas-container">
+                        <canvas id="blueprint-energy-canvas"></canvas>
+
+                        <div class="blueprint-grid">
+
+                            <!-- STAGE 1: DISJOINTED LEGACY TRACKERS -->
+                            <div class="bp-stage bp-stage-1 active" id="bp-stage-1">
+                                <div>
+                                    <div class="bp-stage-tag">DISJOINTED LEGACY TRACKERS</div>
+                                    <div class="bp-stage-subtag">(Telemetry Disintegration)</div>
+
+                                    <!-- Chaos Cluster of Legacy Tools -->
+                                    <div class="legacy-tools-scatter">
+                                        <!-- Tool 1: Heatmap -->
+                                        <div class="tool-window heatmap-tool">
+                                            <div class="tool-win-header">
+                                                <span class="tool-dot red"></span><span class="tool-dot"></span><span class="tool-dot"></span>
+                                                <span>Heatmap</span>
+                                            </div>
+                                            <div class="heatmap-render">
+                                                <div class="heat-spot spot-1"></div>
+                                                <div class="heat-spot spot-2"></div>
+                                            </div>
+                                            <span class="tool-chip-label">Heatmap</span>
+                                        </div>
+
+                                        <!-- Tool 2: Hotjar -->
+                                        <div class="tool-window hotjar-tool">
+                                            <div class="tool-win-header">
+                                                <span class="tool-dot red"></span><span class="tool-dot"></span>
+                                                <span>Hotjar</span>
+                                            </div>
+                                            <div style="font-size: 8px; color: #ef4444; font-weight: 700;">Frustration 88%</div>
+                                            <span class="tool-chip-label">Hotjar</span>
+                                        </div>
+
+                                        <!-- Tool 3: Replay -->
+                                        <div class="tool-window replay-tool">
+                                            <div class="tool-win-header">
+                                                <span class="tool-dot red"></span>
+                                                <span>Replay</span>
+                                            </div>
+                                            <div class="replay-player">
+                                                <div class="replay-bar"><div class="replay-fill"></div></div>
+                                            </div>
+                                            <span class="tool-chip-label">Replay</span>
+                                        </div>
+
+                                        <!-- Tool 4: Search Console & SEMrush -->
+                                        <div class="tool-window search-tool">
+                                            <div class="tool-win-header"><span>Search &amp; SEMrush</span></div>
+                                            <div style="font-size: 8px; color: #38bdf8;">Rank Volatility</div>
+                                            <span class="tool-chip-label">SEMrush</span>
+                                        </div>
+
+                                        <!-- Confused Marketer Character -->
+                                        <div class="confused-marketer-card">
+                                            <div class="confused-avatar">
+                                                <svg width="32" height="32" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.8">
+                                                    <circle cx="12" cy="7" r="4"/>
+                                                    <path d="M5.5 21a8.38 8.38 0 0 1 13 0"/>
+                                                    <path d="M8 3.5 6 2M16 3.5 18 2"/>
+                                                </svg>
+                                                <div class="confused-thoughts">???</div>
+                                            </div>
+                                            <p>Dashboard Fatigue &amp; Cognitive Overload</p>
+                                        </div>
+                                    </div>
+                                </div>
+
+                                <div class="stage-bottom-copy">
+                                    <div class="stage-num-badge">01</div>
+                                    <div class="stage-copy-text">
+                                        <h3>Beyond Telemetry Disintegration:</h3>
+                                        <p>Collapse 10+ fragmented analytics tools into a single, zero-integration evidence engine.</p>
+                                    </div>
+                                </div>
+                            </div>
+
+                            <!-- STAGE 2: INGESTION CRAWL FUNNEL -->
+                            <div class="bp-stage bp-stage-2" id="bp-stage-2">
+                                <div class="bp-stage-tag-center">FROM LEGACY TELEMETRY TO DETERMINISTIC COMMAND</div>
+
+                                <div class="funnel-container">
+                                    <div class="funnel-label">Multi-Dimensional Crawl</div>
+
+                                    <!-- SVG Interactive Funnel Grid & Vortices -->
+                                    <div class="funnel-svg-wrap">
+                                        <svg class="funnel-svg" viewBox="0 0 240 320" fill="none">
+                                            <defs>
+                                                <linearGradient id="funnelGrad" x1="0%" y1="0%" x2="0%" y2="100%">
+                                                    <stop offset="0%" stop-color="#8b2ce0" stop-opacity="0.6"/>
+                                                    <stop offset="50%" stop-color="#3b82f6" stop-opacity="0.8"/>
+                                                    <stop offset="100%" stop-color="#00f0ff" stop-opacity="0.9"/>
+                                                </linearGradient>
+                                                <linearGradient id="funnelStroke" x1="0%" y1="0%" x2="100%" y2="100%">
+                                                    <stop offset="0%" stop-color="#ef4444"/>
+                                                    <stop offset="50%" stop-color="#8b2ce0"/>
+                                                    <stop offset="100%" stop-color="#00f0ff"/>
+                                                </linearGradient>
+                                            </defs>
+
+                                            <!-- Outer Cone Mesh Lines -->
+                                            <path d="M 20 20 L 95 280 A 25 10 0 0 0 145 280 L 220 20" stroke="url(#funnelStroke)" stroke-width="2" fill="none"/>
+                                            
+                                            <!-- Ellipse Rings forming 3D Funnel -->
+                                            <ellipse cx="120" cy="20" rx="100" ry="16" stroke="rgba(139, 44, 224, 0.7)" stroke-width="1.5" fill="rgba(139, 44, 224, 0.05)"/>
+                                            <ellipse cx="120" cy="70" rx="80" ry="13" stroke="rgba(139, 44, 224, 0.6)" stroke-width="1.5"/>
+                                            <ellipse cx="120" cy="120" rx="62" ry="10" stroke="rgba(59, 130, 246, 0.7)" stroke-width="1.5"/>
+                                            <ellipse cx="120" cy="170" rx="46" ry="8" stroke="rgba(0, 240, 255, 0.8)" stroke-width="1.5"/>
+                                            <ellipse cx="120" cy="220" rx="32" ry="6" stroke="rgba(0, 240, 255, 0.9)" stroke-width="1.5"/>
+                                            <ellipse cx="120" cy="275" rx="22" ry="4" stroke="#00f0ff" stroke-width="2" fill="#00f0ff" fill-opacity="0.3"/>
+
+                                            <!-- Funnel Center Stream Shaft -->
+                                            <line x1="120" y1="20" x2="120" y2="310" stroke="#00f0ff" stroke-width="2" stroke-dasharray="4 4" class="funnel-laser-beam"/>
+                                        </svg>
+                                    </div>
+
+                                    <div class="funnel-label">Multi-Dimensional Crawl</div>
+                                </div>
+                            </div>
+
+                            <!-- STAGE 3: 8-LAYER ARCHITECTURE & AI BRAIN SYNTHESIS -->
+                            <div class="bp-stage bp-stage-3" id="bp-stage-3">
+                                <div class="bp-stage-tag-center">DETERMINISTIC CMO SYNTHESIS</div>
+
+                                <div class="synthesis-dual-layout">
+
+                                    <!-- Left Sub-column: 8-Layer Intelligence Architecture Stack -->
+                                    <div class="layer-stack-wrapper">
+                                        <div class="layer-stack-header">
+                                            <span class="layer-hdr-badge">8-LAYER CAPTURE ARCHITECTURE</span>
+                                            <span>Multi-Dimensional Intelligence Layering</span>
+                                        </div>
+
+                                        <div class="layers-vertical-list">
+                                            <div class="architecture-layer-item layer-1" data-layer="1">
+                                                <div class="layer-badge-id">L01</div>
+                                                <div class="layer-info">
+                                                    <strong>Network Baseline</strong>
+                                                    <p>HTTP response, TTFB &amp; topology</p>
+                                                </div>
+                                            </div>
+                                            <div class="architecture-layer-item layer-2" data-layer="2">
+                                                <div class="layer-badge-id">L02</div>
+                                                <div class="layer-info">
+                                                    <strong>Entity Graph</strong>
+                                                    <p>JSON-LD schema, entity clarity</p>
+                                                </div>
+                                            </div>
+                                            <div class="architecture-layer-item layer-3" data-layer="3">
+                                                <div class="layer-badge-id">L03</div>
+                                                <div class="layer-info">
+                                                    <strong>Technical Audit</strong>
+                                                    <p>Lighthouse CWV, crawl health</p>
+                                                </div>
+                                            </div>
+                                            <div class="architecture-layer-item layer-4" data-layer="4">
+                                                <div class="layer-badge-id">L04</div>
+                                                <div class="layer-info">
+                                                    <strong>Offer Stack Ladder</strong>
+                                                    <p>Positioning, value props, proof</p>
+                                                </div>
+                                            </div>
+                                            <div class="architecture-layer-item layer-5" data-layer="5">
+                                                <div class="layer-badge-id">L05</div>
+                                                <div class="layer-info">
+                                                    <strong>Buyer Psychology</strong>
+                                                    <p>JTBD &amp; objection mapping</p>
+                                                </div>
+                                            </div>
+                                            <div class="architecture-layer-item layer-6" data-layer="6">
+                                                <div class="layer-badge-id">L06</div>
+                                                <div class="layer-info">
+                                                    <strong>AEO/GEO Citation</strong>
+                                                    <p>AI answer engine indexation</p>
+                                                </div>
+                                            </div>
+                                            <div class="architecture-layer-item layer-7" data-layer="7">
+                                                <div class="layer-badge-id">L07</div>
+                                                <div class="layer-info">
+                                                    <strong>Rival Whitespace</strong>
+                                                    <p>Competitor gaps, messaging</p>
+                                                </div>
+                                            </div>
+                                            <div class="architecture-layer-item layer-8" data-layer="8">
+                                                <div class="layer-badge-id">L08</div>
+                                                <div class="layer-info">
+                                                    <strong>Live Signal Mining</strong>
+                                                    <p>Real-time intent from social</p>
+                                                </div>
+                                                <div class="social-chips">
+                                                    <span class="social-chip reddit">Reddit</span>
+                                                    <span class="social-chip x-chip">X</span>
+                                                </div>
+                                            </div>
+                                        </div>
+                                    </div>
+
+                                    <!-- Right Sub-column: AI Synthesis Engine Core -->
+                                    <div class="ai-engine-core-wrap">
+                                        <div class="ai-core-brain-node">
+                                            <div class="brain-icon-box">
+                                                <svg width="28" height="28" viewBox="0 0 24 24" fill="none" stroke="#00f0ff" stroke-width="1.8">
+                                                    <path d="M9.5 2A2.5 2.5 0 0 1 12 4.5v15a2.5 2.5 0 0 1-4.96.44 2.5 2.5 0 0 1-2.96-3.08 3 3 0 0 1-.34-5.58 2.5 2.5 0 0 1 1.32-4.24 2.5 2.5 0 0 1 4.44-2.04Z"/>
+                                                    <path d="M14.5 2A2.5 2.5 0 0 0 12 4.5v15a2.5 2.5 0 0 0 4.96.44 2.5 2.5 0 0 0 2.96-3.08 3 3 0 0 0 .34-5.58 2.5 2.5 0 0 0-1.32-4.24 2.5 2.5 0 0 0-4.44-2.04Z"/>
+                                                </svg>
+                                            </div>
+                                            <h4>AI Synthesis Engine</h4>
+                                        </div>
+
+                                        <div class="cmo-synthesis-copy">
+                                            <div class="cmo-num">03</div>
+                                            <div class="cmo-text">
+                                                <h5>Deterministic CMO Synthesis:</h5>
+                                                <p>Trained on high-dimensional data &amp; frameworks. Replaces cognitive fatigue.</p>
+                                            </div>
+                                        </div>
+                                    </div>
+
+                                </div>
+                            </div>
+
+                            <!-- STAGE 4: READY-TO-EXECUTE RECOMMENDATIONS -->
+                            <div class="bp-stage bp-stage-4" id="bp-stage-4">
+                                <div>
+                                    <div class="rec-section-header">
+                                        <div class="rec-header-badge">Ready-to-Execute Recommendations</div>
+                                        <div class="rec-exec-avatar">
+                                            <div class="exec-avatar-img"></div>
+                                            <span>Priority Suite</span>
+                                        </div>
+                                    </div>
+
+                                    <div class="recommendations-list">
+                                        <div class="rec-card rec-1">
+                                            <div class="rec-card-num">01</div>
+                                            <div class="rec-card-content">
+                                                <h4>Refine Positioning for JTBD 1</h4>
+                                                <p>Align homepage value prop directly to Job 1 drivers.</p>
+                                            </div>
+                                            <div class="rec-card-tag high">High Conf</div>
+                                        </div>
+
+                                        <div class="rec-card rec-2">
+                                            <div class="rec-card-num">02</div>
+                                            <div class="rec-card-content">
+                                                <h4>Fix LCP on /product to beat Rival 8</h4>
+                                                <p>Optimize hero image vectors &amp; server TTFB.</p>
+                                            </div>
+                                            <div class="rec-card-tag perf">CWV Speed</div>
+                                        </div>
+
+                                        <div class="rec-card rec-3">
+                                            <div class="rec-card-num">03</div>
+                                            <div class="rec-card-content">
+                                                <h4>Target AEO for Product term on Perplexity</h4>
+                                                <p>Inject JSON-LD entity graphs into features page.</p>
+                                            </div>
+                                            <div class="rec-card-tag geo">AEO Indexing</div>
+                                        </div>
+
+                                        <div class="rec-card rec-4">
+                                            <div class="rec-card-num">04</div>
+                                            <div class="rec-card-content">
+                                                <h4>Address Objection 3 on pricing page</h4>
+                                                <p>Add security compliance &amp; zero-lockin proof chips.</p>
+                                            </div>
+                                            <div class="rec-card-tag opt">Objection</div>
+                                        </div>
+                                    </div>
+                                </div>
+
+                                <!-- Bottom Search URL Bar -->
+                                <div class="blueprint-action-bar">
+                                    <form class="blueprint-input-box" id="blueprint-url-form">
+                                        <svg width="18" height="18" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2"><circle cx="11" cy="11" r="8"/><path d="m21 21-4.3-4.3"/></svg>
+                                        <input type="url" id="blueprint-url-input" placeholder="Enter your website URL" required />
+                                        <button type="submit">Start analysis &rarr;</button>
+                                    </form>
+                                    <p class="blueprint-input-hint">Paste your company URL and we'll build your marketing intelligence</p>
+                                </div>
+                            </div>
+
+                        </div> <!-- End blueprint-grid -->
+                    </div> <!-- End blueprint-main-canvas -->
+
+                </div> <!-- End blueprint-sticky-container -->
+            </div> <!-- End blueprint-scroll-track -->
+        </section>
+
+        <section class="features" id="features">
+            <div class="section-header" data-parallax="0.1">
+                <span class="kicker">COMPLETE PLATFORM CAPABILITIES</span>
+                <h2>From raw web evidence to<br><em>autonomous execution.</em></h2>
+                <p>Smark Connect turns scattered marketing signals into clear priorities, strategic direction, and ready-to-publish work.</p>
+            </div>
+
+            <!-- Core 6 Reports Grid -->
+            <div class="grid">
+                <div class="card" data-parallax="0.05">
+                    <div class="card-tag">STRATEGIC FOUNDATION</div>
+                    <div class="card-icon">
+                        <svg width="20" height="20" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2"><circle cx="11" cy="11" r="8"/><path d="m21 21-4.3-4.3"/></svg>
+                    </div>
+                    <h3>Company Intelligence</h3>
+                    <p>Deep extraction of your brand positioning, offer stack, buyer objection ladder, and competitive advantages — derived straight from your website crawl.</p>
+                    <ul class="card-feature-list">
+                        <li><svg width="14" height="14" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="3"><polyline points="20 6 9 17 4 12"/></svg> Automated 20-page site topology crawl</li>
+                        <li><svg width="14" height="14" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="3"><polyline points="20 6 9 17 4 12"/></svg> Brand voice & tone profiling</li>
+                        <li><svg width="14" height="14" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="3"><polyline points="20 6 9 17 4 12"/></svg> Offer stack & proof ladder mapping</li>
+                    </ul>
+                </div>
+                
+                <div class="card" data-parallax="0.1">
+                    <div class="card-tag">TECHNICAL & GEO</div>
+                    <div class="card-icon">
+                        <svg width="20" height="20" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2"><path d="M3 3v18h18"/><path d="m19 9-5 5-4-4-3 3"/></svg>
+                    </div>
+                    <h3>SEO & GEO Visibility</h3>
+                    <p>Technical health audit combined with Generative Engine Optimization (GEO). Know where you rank on Google and how AI answer engines cite your brand.</p>
+                    <ul class="card-feature-list">
+                        <li><svg width="14" height="14" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="3"><polyline points="20 6 9 17 4 12"/></svg> Core Web Vitals & 100-point SEO audit</li>
+                        <li><svg width="14" height="14" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="3"><polyline points="20 6 9 17 4 12"/></svg> ChatGPT, Perplexity & Gemini indexing</li>
+                        <li><svg width="14" height="14" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="3"><polyline points="20 6 9 17 4 12"/></svg> Schema markup & entity clarity scoring</li>
+                    </ul>
+                </div>
+
+                <div class="card" data-parallax="0.15">
+                    <div class="card-tag">MARKET BENCHMARKING</div>
+                    <div class="card-icon">
+                        <svg width="20" height="20" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2"><path d="M16 21v-2a4 4 0 0 0-4-4H6a4 4 0 0 0-4 4v2"/><circle cx="9" cy="7" r="4"/><path d="M22 21v-2a4 4 0 0 0-3-3.87"/><path d="M16 3.13a4 4 0 0 1 0 7.75"/></svg>
+                    </div>
+                    <h3>Competitor Landscape</h3>
+                    <p>Uncovers true direct and indirect market rivals. Provides positioning matrix, messaging comparison, SWOT gap analysis, and unexploited whitespace opportunities.</p>
+                    <ul class="card-feature-list">
+                        <li><svg width="14" height="14" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="3"><polyline points="20 6 9 17 4 12"/></svg> Automatic rival discovery & profiling</li>
+                        <li><svg width="14" height="14" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="3"><polyline points="20 6 9 17 4 12"/></svg> SWOT & positioning whitespace matrix</li>
+                        <li><svg width="14" height="14" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="3"><polyline points="20 6 9 17 4 12"/></svg> Content gap & keyword overlap radar</li>
+                    </ul>
+                </div>
+
+                <div class="card featured" data-parallax="0.05">
+                    <div class="card-tag">EXECUTIVE BRAIN</div>
+                    <div class="card-icon">
+                        <svg width="20" height="20" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2"><polygon points="12 2 15.09 8.26 22 9.27 17 14.14 18.18 21.02 12 17.77 5.82 21.02 7 14.14 2 9.27 8.91 8.26 12 2"/></svg>
+                    </div>
+                    <h3>AI CMO Synthesis</h3>
+                    <p>Cross-document intelligence layer that reads all six core reports, weighs trade-offs, and formulates prioritized 30/60/90 day strategic roadmaps.</p>
+                    <ul class="card-feature-list">
+                        <li><svg width="14" height="14" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="3"><polyline points="20 6 9 17 4 12"/></svg> Cross-analysis reasoning engine</li>
+                        <li><svg width="14" height="14" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="3"><polyline points="20 6 9 17 4 12"/></svg> Prioritized leverage-matrix recommendations</li>
+                        <li><svg width="14" height="14" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="3"><polyline points="20 6 9 17 4 12"/></svg> Dynamic interactive strategy Q&A</li>
+                    </ul>
+                </div>
+
+                <div class="card" data-parallax="0.1">
+                    <div class="card-tag">TARGETED AUDIENCE</div>
+                    <div class="card-icon">
+                        <svg width="20" height="20" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2"><path d="M17 21v-2a4 4 0 0 0-4-4H5a4 4 0 0 0-4 4v2"/><circle cx="9" cy="7" r="4"/><path d="M23 21v-2a4 4 0 0 0-3-3.87"/><path d="M16 3.13a4 4 0 0 1 0 7.75"/></svg>
+                    </div>
+                    <h3>Audience & ICP Profiling</h3>
+                    <p>Deep ICP persona breakdown, mapping buyer Jobs-To-Be-Done (JTBD), emotional triggers, key hesitation points, and high-converting channels of influence.</p>
+                    <ul class="card-feature-list">
+                        <li><svg width="14" height="14" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="3"><polyline points="20 6 9 17 4 12"/></svg> Persona Jobs-To-Be-Done mapping</li>
+                        <li><svg width="14" height="14" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="3"><polyline points="20 6 9 17 4 12"/></svg> Buying hesitation & objection handles</li>
+                        <li><svg width="14" height="14" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="3"><polyline points="20 6 9 17 4 12"/></svg> Voice-of-customer tone analysis</li>
+                    </ul>
+                </div>
+
+                <div class="card" data-parallax="0.15">
+                    <div class="card-tag">EDITORIAL ENGINE</div>
+                    <div class="card-icon">
+                        <svg width="20" height="20" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2"><path d="M4 19.5v-15A2.5 2.5 0 0 1 6.5 2H20v20H6.5a2.5 2.5 0 0 1-2.5-2.5Z"/><path d="M6 6h10"/><path d="M6 10h10"/></svg>
+                    </div>
+                    <h3>Content Audit & Strategy</h3>
+                    <p>Complete editorial inventory of your existing assets, pillar topic cluster mapping, keyword opportunity radar, and content calendar creation.</p>
+                    <ul class="card-feature-list">
+                        <li><svg width="14" height="14" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="3"><polyline points="20 6 9 17 4 12"/></svg> Full content inventory & score</li>
+                        <li><svg width="14" height="14" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="3"><polyline points="20 6 9 17 4 12"/></svg> Pillar & topic cluster architecture</li>
+                        <li><svg width="14" height="14" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="3"><polyline points="20 6 9 17 4 12"/></svg> High-intent editorial roadmap</li>
+                    </ul>
+                </div>
+            </div>
+
+            <!-- Subheading for Execution & Output Modules -->
+            <div class="feature-subheading" data-parallax="0.1">
+                <h3>Autonomous Execution & Multi-Format Output</h3>
+                <p>Beyond reports: real-time prospect mining, 12 specialized execution agents, and executive export bundles.</p>
+            </div>
+
+            <!-- Secondary Feature Modules Grid (4 cards) -->
+            <div class="grid" style="grid-template-columns: repeat(2, 1fr);">
+                <div class="card" data-parallax="0.05">
+                    <div class="card-tag">REAL-TIME PROSPECTING</div>
+                    <div class="card-icon">
+                        <svg width="20" height="20" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2"><circle cx="11" cy="11" r="8"/><path d="m21 21-4.3-4.3"/><path d="M11 8v6"/><path d="M8 11h6"/></svg>
+                    </div>
+                    <h3>Live Conversation Miner</h3>
+                    <p>Scans public discussions across Reddit, X, LinkedIn, and developer forums for high-intent buying signals. Calculates 100-point lead fit scores and drafts personalized outreach hooks.</p>
+                    <ul class="card-feature-list">
+                        <li><svg width="14" height="14" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="3"><polyline points="20 6 9 17 4 12"/></svg> 100-point ICP & Intent scoring algorithm</li>
+                        <li><svg width="14" height="14" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="3"><polyline points="20 6 9 17 4 12"/></svg> Verbatim quote evidence & trigger event tags</li>
+                        <li><svg width="14" height="14" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="3"><polyline points="20 6 9 17 4 12"/></svg> Tailored cold outreach hook generator</li>
+                    </ul>
+                </div>
+
+                <div class="card" data-parallax="0.1">
+                    <div class="card-tag">MULTI-CHANNEL EXECUTION</div>
+                    <div class="card-icon">
+                        <svg width="20" height="20" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2"><rect x="3" y="11" width="18" height="10" rx="2"/><circle cx="12" cy="5" r="2"/><path d="M12 7v4"/></svg>
+                    </div>
+                    <h3>12 Specialist Execution Agents</h3>
+                    <p>Dedicated agents for SEO, GEO, Content, Social (X, LinkedIn, Reddit, Instagram), Email, YouTube, Creative, Competitor, and Outbound — all sharing your exact company context.</p>
+                    <ul class="card-feature-list">
+                        <li><svg width="14" height="14" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="3"><polyline points="20 6 9 17 4 12"/></svg> Shared truth foundation (zero briefing needed)</li>
+                        <li><svg width="14" height="14" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="3"><polyline points="20 6 9 17 4 12"/></svg> Channel-native content & script generation</li>
+                        <li><svg width="14" height="14" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="3"><polyline points="20 6 9 17 4 12"/></svg> Human-in-the-loop review & approval</li>
+                    </ul>
+                </div>
+
+                <div class="card" data-parallax="0.05">
+                    <div class="card-tag">BOARD-READY DELIVERABLES</div>
+                    <div class="card-icon">
+                        <svg width="20" height="20" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2"><path d="M14 2H6a2 2 0 0 0-2 2v16a2 2 0 0 0 2 2h12a2 2 0 0 0 2-2V8Z"/><path d="M14 2v6h6"/><path d="M12 18v-6"/><path d="m9 15 3 3 3-3"/></svg>
+                    </div>
+                    <h3>Publication-Ready Exports</h3>
+                    <p>Export any individual analysis or complete workspace bundle in three publication formats: executive PDFs, editable PowerPoint decks, and operational Excel workbooks.</p>
+                    <ul class="card-feature-list">
+                        <li><svg width="14" height="14" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="3"><polyline points="20 6 9 17 4 12"/></svg> Branded PDF reports with custom data charts</li>
+                        <li><svg width="14" height="14" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="3"><polyline points="20 6 9 17 4 12"/></svg> Native PPTX presentations with speaker notes</li>
+                        <li><svg width="14" height="14" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="3"><polyline points="20 6 9 17 4 12"/></svg> XLSX action trackers with calculated scoring formulas</li>
+                    </ul>
+                </div>
+
+                <div class="card" data-parallax="0.1">
+                    <div class="card-tag">TECHNICAL PERFORMANCE</div>
+                    <div class="card-icon">
+                        <svg width="20" height="20" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2"><circle cx="12" cy="12" r="10"/><path d="M12 6v6l4 2"/></svg>
+                    </div>
+                    <h3>Self-Hosted Lighthouse Engine</h3>
+                    <p>Runs local Chromium-based Lighthouse audits directly inside your workspace. Tracks Core Web Vitals, accessibility compliance, TTFB response speed, and AI bot directives.</p>
+                    <ul class="card-feature-list">
+                        <li><svg width="14" height="14" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="3"><polyline points="20 6 9 17 4 12"/></svg> Core Web Vitals (FCP, LCP, TBT, CLS) audit</li>
+                        <li><svg width="14" height="14" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="3"><polyline points="20 6 9 17 4 12"/></svg> Server TTFB & internal link topology graph</li>
+                        <li><svg width="14" height="14" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="3"><polyline points="20 6 9 17 4 12"/></svg> Robots.txt AI crawler accessibility check</li>
+                    </ul>
+                </div>
+            </div>
+        </section>
+
+        <section class="workflow">
+            <div class="section-header" data-parallax="0.1">
+                <span class="kicker">THREE STEPS</span>
+                <h2>From URL to<br><em>useful direction.</em></h2>
+            </div>
+            
+            <div class="steps">
+                <div class="step" data-parallax="0.05">
+                    <span class="step-number">1</span>
+                    <h3>Connect</h3>
+                    <p>Add your website and an AI provider key. We support OpenAI, Anthropic, Google Gemini, and OpenRouter.</p>
+                </div>
+                <div class="step" data-parallax="0.1">
+                    <span class="step-number">2</span>
+                    <h3>Understand</h3>
+                    <p>Six connected analyses run against your market evidence. Every recommendation traces to a finding. Every finding traces to a source.</p>
+                </div>
+                <div class="step" data-parallax="0.15">
+                    <span class="step-number">3</span>
+                    <h3>Act</h3>
+                    <p>Ask your AI CMO what matters most. Hand approved work to specialist agents who already know your business.</p>
+                </div>
+            </div>
+        </section>
+
+
+
+        <section class="outputs">
+            <div class="section-header" data-parallax="0.1">
+                <span class="kicker">DELIVERABLES</span>
+                <h2>Strategy your team<br>can <em>actually use.</em></h2>
+            </div>
+            
+            <div class="output-list">
+                <div class="output-item" data-parallax="0.05">
+                    <svg width="24" height="24" viewBox="0 0 24 24" fill="none" stroke="var(--purple-main)" stroke-width="2"><path d="M14 2H6a2 2 0 0 0-2 2v16a2 2 0 0 0 2 2h12a2 2 0 0 0 2-2V8Z"/><path d="M14 2v6h6"/><path d="M12 18v-6"/><path d="m9 15 3 3 3-3"/></svg>
+                    Source-linked recommendations
+                </div>
+                <div class="output-item" data-parallax="0.08">
+                    <svg width="24" height="24" viewBox="0 0 24 24" fill="none" stroke="var(--purple-main)" stroke-width="2"><path d="M14 2H6a2 2 0 0 0-2 2v16a2 2 0 0 0 2 2h12a2 2 0 0 0 2-2V8Z"/><path d="M14 2v6h6"/><path d="M12 18v-6"/><path d="m9 15 3 3 3-3"/></svg>
+                    Version history and focused edits
+                </div>
+                <div class="output-item" data-parallax="0.11">
+                    <svg width="24" height="24" viewBox="0 0 24 24" fill="none" stroke="var(--purple-main)" stroke-width="2"><path d="M14 2H6a2 2 0 0 0-2 2v16a2 2 0 0 0 2 2h12a2 2 0 0 0 2-2V8Z"/><path d="M14 2v6h6"/><path d="M12 18v-6"/><path d="m9 15 3 3 3-3"/></svg>
+                    Company-wide or single-report exports
+                </div>
+            </div>
+        </section>
+
+        <!-- Insights, Whitepapers & Case Studies Section (Bento Grid) -->
+        <section class="insights" id="insights">
+            <div class="section-header" data-parallax="0.1">
+                <span class="kicker">KNOWLEDGE & CASE STUDIES</span>
+                <h2>Insights, research,<br><em>& proven playbooks.</em></h2>
+                <p>In-depth whitepapers, real customer success stories, and actionable frameworks on modern AI marketing intelligence.</p>
+            </div>
+
+            <div class="insights-filters">
+                <button class="filter-btn active" data-filter="all">All Insights</button>
+                <button class="filter-btn" data-filter="whitepaper">Whitepapers</button>
+                <button class="filter-btn" data-filter="case-study">Case Studies</button>
+                <button class="filter-btn" data-filter="playbook">Playbooks</button>
+            </div>
+
+            <div class="insights-grid">
+                <!-- Bento Tile 1: Hero Featured Whitepaper (Span 8 Cols) -->
+                <div class="insight-card tile-hero" data-category="whitepaper" onclick="openInsightModal(1)">
+                    <div>
+                        <div class="insight-header">
+                            <span class="insight-category">FEATURED WHITEPAPER</span>
+                            <span class="insight-metric purple">+310% AI Citation Index</span>
+                        </div>
+                        <h3>The Shift from Search to Synthesis: Benchmarking GEO & Vector Citations in 2026</h3>
+                        <p>Quantitative research analyzing how ChatGPT, Perplexity, Claude, and Gemini resolve brand authority compared to legacy search engines, introducing our 8-layer entity clarity framework.</p>
+                        
+                        <div class="tile-preview-box">
+                            <div class="telemetry-row">
+                                <span class="telemetry-label">LLM Vector Resolution Index</span>
+                                <span class="telemetry-val">0.84 Correlation</span>
+                            </div>
+                            <div class="telemetry-bar-bg">
+                                <div class="telemetry-bar-fill" style="width: 84%;"></div>
+                            </div>
+                            <div class="telemetry-row" style="margin-top: 4px;">
+                                <span class="telemetry-label">Entity Citation Placement Depth</span>
+                                <span class="telemetry-val">94.2%</span>
+                            </div>
+                        </div>
+                    </div>
+                    <div class="insight-footer">
+                        <span>12 min read • Smarketers AI Research Lab</span>
+                        <span class="insight-read-more">Read paper &rarr;</span>
+                    </div>
+                </div>
+
+                <!-- Bento Tile 2: Tall Intent Mining Playbook (Span 4 Cols, 2 Rows) -->
+                <div class="insight-card tile-tall" data-category="playbook" onclick="openInsightModal(3)">
+                    <div>
+                        <div class="insight-header">
+                            <span class="insight-category">INTENT PLAYBOOK</span>
+                            <span class="insight-metric">100-Pt Lead Scale</span>
+                        </div>
+                        <h3>Commercial Intent Lead Mining: Scoring Social Signals into B2B Pipeline</h3>
+                        <p>Practical operational guide for tracking active buying intent across Reddit, X, and LinkedIn. Learn how 100-point intent algorithms isolate hot leads before contact form fills.</p>
+                        
+                        <div class="tile-preview-box" style="margin-top: 20px;">
+                            <div class="telemetry-row">
+                                <span class="telemetry-label">ICP Fit Weight</span>
+                                <span class="telemetry-val">25 Pts</span>
+                            </div>
+                            <div class="telemetry-row">
+                                <span class="telemetry-label">Buying Intent Signal</span>
+                                <span class="telemetry-val">25 Pts</span>
+                            </div>
+                            <div class="telemetry-row">
+                                <span class="telemetry-label">Event Trigger Window</span>
+                                <span class="telemetry-val">15 Pts</span>
+                            </div>
+                            <div class="telemetry-row" style="border-top: 1px solid rgba(255,255,255,0.06); padding-top: 6px; margin-top: 2px;">
+                                <span class="telemetry-label" style="color: white; font-weight: 600;">Threshold Qualification</span>
+                                <span class="telemetry-val" style="color: #d89af5;">90+ Pts</span>
+                            </div>
+                        </div>
+                    </div>
+                    <div class="insight-footer">
+                        <span>7 min read • Growth Playbook</span>
+                        <span class="insight-read-more">Read playbook &rarr;</span>
+                    </div>
+                </div>
+
+                <!-- Bento Tile 3: Standard Architecture Whitepaper (Span 4 Cols) -->
+                <div class="insight-card tile-standard" data-category="whitepaper" onclick="openInsightModal(4)">
+                    <div>
+                        <div class="insight-header">
+                            <span class="insight-category">ENGINEERING REPORT</span>
+                            <span class="insight-metric purple">98% Voice Fidelity</span>
+                        </div>
+                        <h3>Multi-Agent AI Architecture: Shared Context vs. Prompt Engineering</h3>
+                        <p>Technical architecture breakdown showing why standalone ChatGPT prompts cause voice drift, and how a shared 20-page web evidence base keeps 12 specialist agents aligned.</p>
+                    </div>
+                    <div class="insight-footer">
+                        <span>15 min read • Engineering Lab</span>
+                        <span class="insight-read-more">Read report &rarr;</span>
+                    </div>
+                </div>
+
+                <!-- Bento Tile 4: Standard Research Report (Span 4 Cols) -->
+                <div class="insight-card tile-standard" data-category="whitepaper" onclick="openInsightModal(6)">
+                    <div>
+                        <div class="insight-header">
+                            <span class="insight-category">RESEARCH AUDIT</span>
+                            <span class="insight-metric blue">10,000 Site Audit</span>
+                        </div>
+                        <h3>State of AI Crawler Access: Robots.txt & Schema Architectures</h3>
+                        <p>Empirical analysis of GPTBot, ClaudeBot, and PerplexityBot indexing rules across top B2B SaaS domains, surfacing the hidden search penalty of blocking AI crawlers.</p>
+                    </div>
+                    <div class="insight-footer">
+                        <span>11 min read • Web Crawling Lab</span>
+                        <span class="insight-read-more">Read paper &rarr;</span>
+                    </div>
+                </div>
+
+                <!-- Bento Tile 5: Wide Case Study (Span 8 Cols) -->
+                <div class="insight-card tile-wide" data-category="case-study" onclick="openInsightModal(2)">
+                    <div>
+                        <div class="insight-header">
+                            <span class="insight-category">ENTERPRISE CASE STUDY</span>
+                            <span class="insight-metric">4.2x Faster Strategy Cycle</span>
+                        </div>
+                        <h3>How FinTech Ramp Unified 14 Marketing Channels with AI CMO Synthesis</h3>
+                        <p>Case study detailing how Ramp consolidated fragmented agency spreadsheets into a single evidence-backed marketing command center, reducing strategy turnaround from 3 weeks to 48 hours.</p>
+                        
+                        <div class="tile-preview-box" style="display: grid; grid-template-columns: repeat(3, 1fr); gap: 16px;">
+                            <div>
+                                <div class="telemetry-label">Strategy Cycle</div>
+                                <div class="telemetry-val" style="font-size: 16px; margin-top: 4px; color: #ffffff;">21d &rarr; 48h</div>
+                            </div>
+                            <div>
+                                <div class="telemetry-label">Annual Retainer Savings</div>
+                                <div class="telemetry-val" style="font-size: 16px; margin-top: 4px; color: #d89af5;">$180,000</div>
+                            </div>
+                            <div>
+                                <div class="telemetry-label">Brand Voice Fidelity</div>
+                                <div class="telemetry-val" style="font-size: 16px; margin-top: 4px; color: #93c5fd;">98.4%</div>
+                            </div>
+                        </div>
+                    </div>
+                    <div class="insight-footer">
+                        <span>8 min read • Ramp Growth Case</span>
+                        <span class="insight-read-more">Read case study &rarr;</span>
+                    </div>
+                </div>
+
+                <!-- Bento Tile 6: Standard Case Study (Span 4 Cols) -->
+                <div class="insight-card tile-standard" data-category="case-study" onclick="openInsightModal(5)">
+                    <div>
+                        <div class="insight-header">
+                            <span class="insight-category">DEVTOOLS CASE</span>
+                            <span class="insight-metric blue">140k Organic Visits/mo</span>
+                        </div>
+                        <h3>Scaling DevTools Content from 10 to 100 Articles/Month</h3>
+                        <p>How CloudScale used Smark Connect's Content Audit & Specialist Agents to uncover 48 technical developer search gaps and scale organic traffic without quality degradation.</p>
+                    </div>
+                    <div class="insight-footer">
+                        <span>10 min read • Growth Case</span>
+                        <span class="insight-read-more">Read story &rarr;</span>
+                    </div>
+                </div>
+
+                <!-- Bento Tile 7: Standard Executive Playbook (Span 4 Cols) -->
+                <div class="insight-card tile-standard" data-category="playbook" onclick="openInsightModal(7)">
+                    <div>
+                        <div class="insight-header">
+                            <span class="insight-category">EXEC PLAYBOOK</span>
+                            <span class="insight-metric purple">18 Hrs Saved / Qtr</span>
+                        </div>
+                        <h3>The Executive CMO's Guide to Automated Board Decks</h3>
+                        <p>How marketing leaders automate quarterly performance presentations, generating data-rich PDF, PowerPoint, and Excel exports with source-linked evidence.</p>
+                    </div>
+                    <div class="insight-footer">
+                        <span>6 min read • Executive Ops</span>
+                        <span class="insight-read-more">Read playbook &rarr;</span>
+                    </div>
+                </div>
+
+                <!-- Bento Tile 8: Wide Research Benchmark (Span 8 Cols) -->
+                <div class="insight-card tile-wide" data-category="whitepaper" onclick="openInsightModal(8)">
+                    <div>
+                        <div class="insight-header">
+                            <span class="insight-category">INDUSTRY BENCHMARK</span>
+                            <span class="insight-metric blue">500 SaaS Benchmark</span>
+                        </div>
+                        <h3>AEO vs SEO: Measuring Generative Engine Share Across Enterprise Brands</h3>
+                        <p>Comprehensive research benchmark tracking AI Overview impressions vs traditional organic clicks across competitive SaaS sectors, featuring actionable JSON-LD entity schema guidelines.</p>
+                        
+                        <div class="tile-preview-box">
+                            <div class="telemetry-row">
+                                <span class="telemetry-label">Commercial B2B Queries Returning AI Overview</span>
+                                <span class="telemetry-val">42% Query Share</span>
+                            </div>
+                            <div class="telemetry-bar-bg">
+                                <div class="telemetry-bar-fill" style="width: 42%;"></div>
+                            </div>
+                        </div>
+                    </div>
+                    <div class="insight-footer">
+                        <span>14 min read • Generative Intelligence Lab</span>
+                        <span class="insight-read-more">Read benchmark &rarr;</span>
+                    </div>
+                </div>
+            </div>
+        </section>
+
+        <!-- Comparison Matrix Section -->
+        <section class="comparison" id="comparison">
+            <div class="section-header" data-parallax="0.1">
+                <span class="kicker">WHY SMARK CONNECT</span>
+                <h2>They report data.<br><em>We connect it to pipeline.</em></h2>
+                <p>Legacy SEO platforms log search numbers. CRMs track closed deals. Smark Connect bridges the gap between raw web evidence and revenue growth.</p>
+            </div>
+
+            <div class="comparison-table-wrapper" data-parallax="0.05">
+                <table class="comparison-table">
+                    <thead>
+                        <tr>
+                            <th style="width: 25%;">Capability</th>
+                            <th style="width: 15%;">SEMrush</th>
+                            <th style="width: 15%;">Ahrefs</th>
+                            <th style="width: 15%;">HubSpot</th>
+                            <th style="width: 15%;">Growpad</th>
+                            <th class="highlight-col" style="width: 15%;">
+                                <div class="smark-badge-header">
+                                    <span>Smark Connect</span>
+                                    <span class="smark-winner-tag">AI CMO</span>
+                                </div>
+                            </th>
+                        </tr>
+                    </thead>
+                    <tbody>
+                        <tr>
+                            <td><strong>Keyword Research & Tracking</strong></td>
+                            <td><span class="feature-check">✓ Full</span></td>
+                            <td><span class="feature-check">✓ Full</span></td>
+                            <td><span class="feature-basic">Basic</span></td>
+                            <td><span class="feature-basic">Basic</span></td>
+                            <td class="highlight-col"><span class="feature-ai">✓ Full AI + Entity</span></td>
+                        </tr>
+                        <tr>
+                            <td><strong>Competitor Analysis</strong></td>
+                            <td><span class="feature-basic">SERP Only</span></td>
+                            <td><span class="feature-basic">SERP Only</span></td>
+                            <td><span class="feature-basic">Manual</span></td>
+                            <td><span class="feature-basic">Basic</span></td>
+                            <td class="highlight-col"><span class="feature-ai">✓ SWOT & Whitespace</span></td>
+                        </tr>
+                        <tr>
+                            <td><strong>AI Content Generation</strong></td>
+                            <td><span class="feature-basic">Add-on</span></td>
+                            <td><span class="feature-cross">✕ No</span></td>
+                            <td><span class="feature-basic">Basic AI</span></td>
+                            <td><span class="feature-basic">Basic AI</span></td>
+                            <td class="highlight-col"><span class="feature-ai">✓ 12 Execution Agents</span></td>
+                        </tr>
+                        <tr>
+                            <td><strong>CRM Pipeline Attribution</strong></td>
+                            <td><span class="feature-cross">✕ No</span></td>
+                            <td><span class="feature-cross">✕ No</span></td>
+                            <td><span class="feature-check">✓ Full</span></td>
+                            <td><span class="feature-basic">Basic</span></td>
+                            <td class="highlight-col"><span class="feature-ai">✓ Closed-Loop Sync</span></td>
+                        </tr>
+                        <tr>
+                            <td><strong>Keyword &rarr; Revenue Mapping</strong></td>
+                            <td><span class="feature-cross">✕ No</span></td>
+                            <td><span class="feature-cross">✕ No</span></td>
+                            <td><span class="feature-basic">Manual Setup</span></td>
+                            <td><span class="feature-cross">✕ No</span></td>
+                            <td class="highlight-col"><span class="feature-ai">✓ Automated Mapping</span></td>
+                        </tr>
+                        <tr>
+                            <td><strong>Intent Cluster Linkage</strong></td>
+                            <td><span class="feature-basic">Basic</span></td>
+                            <td><span class="feature-basic">Basic</span></td>
+                            <td><span class="feature-cross">✕ No</span></td>
+                            <td><span class="feature-basic">Manual</span></td>
+                            <td class="highlight-col"><span class="feature-ai">✓ Dynamic JTBD Clusters</span></td>
+                        </tr>
+                        <tr>
+                            <td><strong>AI Overview / AEO Tracking</strong></td>
+                            <td><span class="feature-cross">✕ No</span></td>
+                            <td><span class="feature-cross">✕ No</span></td>
+                            <td><span class="feature-cross">✕ No</span></td>
+                            <td><span class="feature-cross">✕ No</span></td>
+                            <td class="highlight-col"><span class="feature-ai">✓ ChatGPT, Perplexity & Gemini</span></td>
+                        </tr>
+                        <tr>
+                            <td><strong>Behavioral Intent (Live Mining)</strong></td>
+                            <td><span class="feature-cross">✕ No</span></td>
+                            <td><span class="feature-cross">✕ No</span></td>
+                            <td><span class="feature-cross">✕ No</span></td>
+                            <td><span class="feature-cross">✕ No</span></td>
+                            <td class="highlight-col"><span class="feature-ai">✓ 100-Pt Lead Mining</span></td>
+                        </tr>
+                        <tr>
+                            <td><strong>Evidence-Scored Recommendations</strong></td>
+                            <td><span class="feature-cross">✕ No</span></td>
+                            <td><span class="feature-cross">✕ No</span></td>
+                            <td><span class="feature-cross">✕ No</span></td>
+                            <td><span class="feature-cross">✕ No</span></td>
+                            <td class="highlight-col"><span class="feature-ai">✓ 100% Sourced Proof</span></td>
+                        </tr>
+                        <tr>
+                            <td><strong>Pipeline Impact Scoring</strong></td>
+                            <td><span class="feature-cross">✕ No</span></td>
+                            <td><span class="feature-cross">✕ No</span></td>
+                            <td><span class="feature-cross">✕ No</span></td>
+                            <td><span class="feature-cross">✕ No</span></td>
+                            <td class="highlight-col"><span class="feature-ai">✓ AI CMO Prioritization</span></td>
+                        </tr>
+                    </tbody>
+                </table>
+            </div>
+        </section>
+
+        <section class="faq">
+            <div class="section-header" data-parallax="0.1">
+                <span class="kicker">BEFORE YOU START</span>
+                <h2>A few useful answers.</h2>
+            </div>
+            
+            <div class="faq-accordion" data-parallax="0.05">
+                <div class="faq-accordion-item">
+                    <div class="faq-accordion-header">
+                        <h3>What happens when I add my website?</h3>
+                        <span class="faq-accordion-icon">+</span>
+                    </div>
+                    <div class="faq-accordion-content">
+                        <p>We crawl up to 20 public pages, capture a network baseline, and run six analyses concurrently — company intelligence, SEO, AI visibility, competitors, audience, and content. The first document lands in under three minutes.</p>
+                    </div>
+                </div>
+
+                <div class="faq-accordion-item">
+                    <div class="faq-accordion-header">
+                        <h3>Does Smark publish anything automatically?</h3>
+                        <span class="faq-accordion-icon">+</span>
+                    </div>
+                    <div class="faq-accordion-content">
+                        <p>No. Agents surface opportunities and prepare work. You keep approval control over everything.</p>
+                    </div>
+                </div>
+
+                <div class="faq-accordion-item">
+                    <div class="faq-accordion-header">
+                        <h3>Which AI providers are supported?</h3>
+                        <span class="faq-accordion-icon">+</span>
+                    </div>
+                    <div class="faq-accordion-content">
+                        <p>OpenAI, Anthropic, Google Gemini, and OpenRouter. You connect your own key during setup and can change providers any time.</p>
+                    </div>
+                </div>
+
+                <div class="faq-accordion-item">
+                    <div class="faq-accordion-header">
+                        <h3>What export formats are available?</h3>
+                        <span class="faq-accordion-icon">+</span>
+                    </div>
+                    <div class="faq-accordion-content">
+                        <p>Every analysis produces a branded PDF, an editable PowerPoint, and — when the data warrants it — an operational Excel workbook with trackers and scores.</p>
+                    </div>
+                </div>
+
+                <div class="faq-accordion-item">
+                    <div class="faq-accordion-header">
+                        <h3>How far does the token budget go?</h3>
+                        <span class="faq-accordion-icon">+</span>
+                    </div>
+                    <div class="faq-accordion-content">
+                        <p>The default workspace budget is 2M tokens. A full company scan uses roughly 180k–300k tokens depending on site size. Plan for 6–8 complete scans, with focused edits using substantially less.</p>
+                    </div>
+                </div>
+            </div>
+        </section>
+
+        <section class="final-cta">
+            <div class="section-header" data-parallax="0.1">
+                <span class="kicker">YOUR NEXT MOVE IS IN THE DATA</span>
+                <h2>Give your marketing<br><em>direction.</em></h2>
+                <p>Connect your website. Build your company intelligence. Let an AI CMO and twelve specialist agents do the rest.</p>
+                <div style="margin-top: 40px;">
+                    <a href="#" class="btn btn-primary">Start with your website &rarr;</a>
+                </div>
+            </div>
+        </section>
+
+        <footer>
+            &copy; 2026 Smark Connect. AI-Powered Marketing Intelligence.
+        </footer>
+    </div>
+
+    <script>
+        // Check for reduced motion preference
+        const prefersReducedMotion = window.matchMedia('(prefers-reduced-motion: reduce)').matches;
+
+        if (!prefersReducedMotion) {
+            // DOT CANVAS
+            const dotCanvas = document.getElementById('dot-canvas');
+            const dCtx = dotCanvas.getContext('2d');
+            
+            let mouseX = -1000;
+            let mouseY = -1000;
+            
+            window.addEventListener('mousemove', (e) => {
+                mouseX = e.clientX;
+                mouseY = e.clientY;
+            });
+
+            // Sonar Grid Rings & Ambient Wavefronts
+            const sonarRings = [];
+            const ringSpeed = 135; // px/sec - slower, gentle ambient glide
+            const ringWidth = 115;  // px - softer transition
+            const amplitude = 1.5;
+            const pingEvery = 4.2; // seconds - relaxed cadence
+            let nextPingTime = performance.now() + 1000;
+
+            function addSonarRing(x, y, born) {
+                sonarRings.push({ x, y, born });
+                while (sonarRings.length > 7) sonarRings.shift();
+            }
+
+            // Seed initial ping in hero area
+            addSonarRing(window.innerWidth * 0.5, window.innerHeight * 0.42, performance.now() - 400);
+
+            // Emit ring on click/pointerdown anywhere on screen
+            window.addEventListener('pointerdown', (e) => {
+                addSonarRing(e.clientX, e.clientY, performance.now());
+            });
+
+            function resizeDotCanvas() {
+                dotCanvas.width = window.innerWidth;
+                dotCanvas.height = window.innerHeight;
+            }
+
+            window.addEventListener('resize', () => {
+                resizeDotCanvas();
+                resizeWaveCanvas();
+            });
+
+            function drawDots() {
+                dCtx.clearRect(0, 0, dotCanvas.width, dotCanvas.height);
+                const now = performance.now();
+                const w = dotCanvas.width;
+                const h = dotCanvas.height;
+
+                // Ambient periodic ping spawn in hero zone
+                if (now >= nextPingTime) {
+                    const px = w * (0.2 + Math.random() * 0.6);
+                    const py = h * (0.15 + Math.random() * 0.5);
+                    addSonarRing(px, py, now);
+                    nextPingTime = now + (pingEvery * 1000);
+                }
+
+                // Filter alive rings
+                const lifetime = (Math.hypot(w, h) + ringWidth) / ringSpeed;
+                for (let i = sonarRings.length - 1; i >= 0; i--) {
+                    if ((now - sonarRings[i].born) / 1000 >= lifetime) {
+                        sonarRings.splice(i, 1);
+                    }
+                }
+
+                const liveRings = sonarRings.map(r => {
+                    const age = (now - r.born) / 1000;
+                    const radius = age * ringSpeed;
+                    return { x: r.x, y: r.y, radius, reach: radius + ringWidth, fade: Math.max(0, 1 - age / lifetime) };
+                });
+
+                const spacing = 26;
+                const TAU = Math.PI * 2;
+
+                for (let x = 0; x < w; x += spacing) {
+                    for (let y = 0; y < h; y += spacing) {
+                        const dx = x - mouseX;
+                        const dy = y - mouseY;
+                        const dist = Math.sqrt(dx * dx + dy * dy);
+
+                        // Calculate sonar wavefront energy
+                        let waveEnergy = 0;
+                        for (let r = 0; r < liveRings.length; r++) {
+                            const ring = liveRings[r];
+                            if (Math.abs(x - ring.x) > ring.reach || Math.abs(y - ring.y) > ring.reach) continue;
+                            const dRing = Math.abs(Math.hypot(x - ring.x, y - ring.y) - ring.radius);
+                            if (dRing >= ringWidth) continue;
+                            const t = 1 - dRing / ringWidth;
+                            const k = t * t * (3 - 2 * t) * ring.fade;
+                            if (k > waveEnergy) waveEnergy = k;
+                        }
+
+                        let radius = 1.35 * (1 + amplitude * waveEnergy);
+                        let alpha = 0.20 + (0.45 * waveEnergy);
+                        let color = waveEnergy > 0.05 
+                            ? `rgba(168, 130, 246, ${alpha})`
+                            : 'rgba(255, 255, 255, 0.18)';
+
+                        if (dist < 180) {
+                            const factor = 1 - (dist / 180);
+                            radius = Math.max(radius, 1.35 + (1.6 * factor));
+                            color = `rgba(168, 130, 246, ${Math.max(alpha, 0.25 + 0.35 * factor)})`;
+                        }
+
+                        dCtx.beginPath();
+                        dCtx.arc(x, y, radius, 0, TAU);
+                        dCtx.fillStyle = color;
+                        dCtx.fill();
+
+                        if (waveEnergy > 0.35 || dist < 90) {
+                            const aura = Math.max(waveEnergy, 1 - dist / 90);
+                            dCtx.beginPath();
+                            dCtx.arc(x, y, radius + 2.2, 0, TAU);
+                            dCtx.fillStyle = `rgba(168, 85, 247, ${0.2 * aura})`;
+                            dCtx.fill();
+                        }
+                    }
+                }
+                
+                requestAnimationFrame(drawDots);
+            }
+
+            // WAVE CANVAS
+            const waveCanvas = document.getElementById('wave-canvas');
+            const wCtx = waveCanvas.getContext('2d');
+            let waveTime = 0;
+
+            function resizeWaveCanvas() {
+                waveCanvas.width = window.innerWidth;
+                waveCanvas.height = window.innerHeight;
+            }
+
+            function drawWaves() {
+                wCtx.clearRect(0, 0, waveCanvas.width, waveCanvas.height);
+                waveTime += 0.014;
+                const w = waveCanvas.width;
+                const h = waveCanvas.height;
+                
+                const waves = [
+                    { // Primary left sweep — bold neon gradient
+                    startX: -w * 0.15,
+                    startY: h * 1.15,
+                    points: [
+                        { cpx1: w * 0.02, cpy1: h * 0.85, cpx2: w * 0.12, cpy2: h * 0.42, ex: w * 0.32, ey: h * 0.3 },
+                        { cpx1: w * 0.42, cpy1: h * 0.22, cpx2: w * 0.55, cpy2: h * 0.28, ex: w * 0.72, ey: h * 0.45 },
+                        { cpx1: w * 0.82, cpy1: h * 0.55, cpx2: w * 0.92, cpy2: h * 0.7, ex: w * 1.15, ey: h * 0.8 },
+                    ],
+                    width: 260,
+                    colors: ['rgba(139,44,224,0)','rgba(168,85,247,0.85)','rgba(99,102,241,0.75)','rgba(56,189,248,0.6)','rgba(0,240,255,0.3)','rgba(0,240,255,0)'],
+                    phase: 0, speed: 1.8,
+                    },
+                    { // Primary right sweep — bold cyan & violet
+                    startX: w * 1.15,
+                    startY: h * 1.15,
+                    points: [
+                        { cpx1: w * 0.98, cpy1: h * 0.82, cpx2: w * 0.88, cpy2: h * 0.4, ex: w * 0.68, ey: h * 0.3 },
+                        { cpx1: w * 0.58, cpy1: h * 0.24, cpx2: w * 0.45, cpy2: h * 0.3, ex: w * 0.28, ey: h * 0.48 },
+                        { cpx1: w * 0.18, cpy1: h * 0.58, cpx2: w * 0.08, cpy2: h * 0.72, ex: -w * 0.12, ey: h * 0.85 },
+                    ],
+                    width: 280,
+                    colors: ['rgba(139,44,224,0)','rgba(192,132,252,0.85)','rgba(129,140,248,0.7)','rgba(59,130,246,0.5)','rgba(0,240,255,0.2)','rgba(0,240,255,0)'],
+                    phase: 1.2, speed: 1.5,
+                    },
+                    { // Inner left — secondary neon wave
+                    startX: -w * 0.05,
+                    startY: h * 1.05,
+                    points: [
+                        { cpx1: w * 0.1, cpy1: h * 0.78, cpx2: w * 0.2, cpy2: h * 0.48, ex: w * 0.38, ey: h * 0.38 },
+                        { cpx1: w * 0.48, cpy1: h * 0.32, cpx2: w * 0.58, cpy2: h * 0.36, ex: w * 0.75, ey: h * 0.52 },
+                    ],
+                    width: 140,
+                    colors: ['rgba(192,132,252,0)','rgba(192,132,252,0.75)','rgba(129,140,248,0.5)','rgba(192,132,252,0)'],
+                    phase: 2.5, speed: 2.2,
+                    },
+                    { // Inner right — secondary neon ribbon
+                    startX: w * 1.05,
+                    startY: h * 1.05,
+                    points: [
+                        { cpx1: w * 0.9, cpy1: h * 0.75, cpx2: w * 0.8, cpy2: h * 0.46, ex: w * 0.62, ey: h * 0.36 },
+                        { cpx1: w * 0.52, cpy1: h * 0.3, cpx2: w * 0.42, cpy2: h * 0.38, ex: w * 0.25, ey: h * 0.55 },
+                    ],
+                    width: 130,
+                    colors: ['rgba(168,85,247,0)','rgba(168,85,247,0.7)','rgba(99,102,241,0.45)','rgba(168,85,247,0)'],
+                    phase: 3.8, speed: 2.5,
+                    },
+                    { // Deep center glow — wide ambient fill
+                    startX: w * 0.15,
+                    startY: h * 1.3,
+                    points: [
+                        { cpx1: w * 0.25, cpy1: h * 0.65, cpx2: w * 0.38, cpy2: h * 0.35, ex: w * 0.5, ey: h * 0.32 },
+                        { cpx1: w * 0.62, cpy1: h * 0.3, cpx2: w * 0.75, cpy2: h * 0.55, ex: w * 0.85, ey: h * 1.3 },
+                    ],
+                    width: 340,
+                    colors: ['rgba(139,44,224,0)','rgba(139,44,224,0.45)','rgba(129,140,248,0.3)','rgba(139,44,224,0)'],
+                    phase: 5, speed: 1.1,
+                    },
+                ];
+
+                waves.forEach(wave => {
+                    const t = waveTime * wave.speed + wave.phase;
+                    const wobbleA = Math.sin(t) * 95;
+                    const wobbleB = Math.cos(t * 0.85) * 68;
+                    const wobbleC = Math.sin(t * 1.4) * 45;
+                    
+                    wCtx.beginPath();
+                    wCtx.moveTo(wave.startX, wave.startY + wobbleA * 0.4);
+                    
+                    wave.points.forEach((p, i) => {
+                        const oA = Math.sin(t + i * 1.1) * wobbleA;
+                        const oB = Math.cos(t * 0.8 + i * 0.9) * wobbleB;
+                        const oC = Math.sin(t * 1.5 + i * 1.4) * wobbleC;
+                        wCtx.bezierCurveTo(
+                            p.cpx1 + oB + oC * 0.5, p.cpy1 + oA,
+                            p.cpx2 - oA + oC, p.cpy2 + oB * 0.8,
+                            p.ex + oA * 0.4 - oC * 0.3, p.ey - oB * 0.6
+                        );
+                    });
+                    
+                    const gradient = wCtx.createLinearGradient(0, h, w, 0);
+                    wave.colors.forEach((c, i) => gradient.addColorStop(i / (wave.colors.length - 1), c));
+                    
+                    wCtx.strokeStyle = gradient;
+                    wCtx.lineWidth = wave.width;
+                    wCtx.lineCap = 'round';
+                    wCtx.lineJoin = 'round';
+                    wCtx.stroke();
+                });
+                
+                requestAnimationFrame(drawWaves);
+            }
+
+            // Initialize canvases
+            resizeDotCanvas();
+            resizeWaveCanvas();
+            drawDots();
+            drawWaves();
+
+            // Interactive mouse responsiveness for both wave canvas and particles container
+            const particlesContainer = document.getElementById('particles');
+
+            window.addEventListener('mousemove', (e) => {
+                const x = (e.clientX / window.innerWidth - 0.5) * 20;
+                const y = (e.clientY / window.innerHeight - 0.5) * 20;
+                waveCanvas.style.transform = `translate(${x}px, ${y}px)`;
+                if (particlesContainer) {
+                    particlesContainer.style.transform = `translate(${x * 1.5}px, ${y * 1.5}px)`;
+                }
+            });
+
+            // Add vibrant, ultra-visible ambient particles
+            if (particlesContainer) {
+                for(let i = 0; i < 32; i++) {
+                    const particle = document.createElement('div');
+                    particle.className = 'particle';
+                    const size = Math.random() * 8 + 4; // 4px to 12px glowing nodes
+                    particle.style.width = `${size}px`;
+                    particle.style.height = `${size}px`;
+                    particle.style.left = `${Math.random() * 100}vw`;
+                    particle.style.animationDuration = `${Math.random() * 14 + 10}s`;
+                    particle.style.animationDelay = `${Math.random() * -20}s`;
+                    particlesContainer.appendChild(particle);
+                }
+            }
+        }
+
+        // Parallax scroll logic
+        const parallaxElements = document.querySelectorAll('[data-parallax]');
+        const header = document.getElementById('header');
+
+        window.addEventListener('scroll', () => {
+            const scrollY = window.scrollY;
+            
+            // Header blur effect
+            if (scrollY > 50) {
+                header.classList.add('scrolled');
+            } else {
+                header.classList.remove('scrolled');
+            }
+
+            // Content kept stationary and calm for clean reading experience
+        });
+
+        // Insights Filter & Modal Reader Logic
+        const filterBtns = document.querySelectorAll('.filter-btn');
+        const insightCards = document.querySelectorAll('.insight-card');
+
+        filterBtns.forEach(btn => {
+            btn.addEventListener('click', () => {
+                filterBtns.forEach(b => b.classList.remove('active'));
+                btn.classList.add('active');
+
+                const filter = btn.getAttribute('data-filter');
+                insightCards.forEach(card => {
+                    const cat = card.getAttribute('data-category');
+                    if (filter === 'all' || cat === filter) {
+                        card.style.display = '';
+                    } else {
+                        card.style.display = 'none';
+                    }
+                });
+            });
+        });
+
+        const insightArticles = {
+            1: {
+                category: "WHITEPAPER",
+                title: "The Shift from Search to Synthesis: Benchmarking GEO & Vector Citations in 2026",
+                meta: "Published Sept 2026 • 12 min read • Smarketers Research Group",
+                metric: "+310% AI Citation Index",
+                takeaways: [
+                    "Over 68% of commercial B2B evaluation queries now start inside conversational AI interfaces (ChatGPT, Perplexity, Claude).",
+                    "Entity clarity scoring correlates at 0.84 with citation placement frequency in Perplexity Pro.",
+                    "Implementing structured JSON-LD organization schemas increased AI indexation depth by 3.2x across tested domains."
+                ],
+                body: `<p>Traditional Search Engine Optimization (SEO) was built for keyword indexing and blue links. In 2026, Generative Engine Optimization (GEO) requires optimizing for <strong>multi-layered vector synthesis and AI entity resolution</strong>.</p>
+                       <p>Our benchmark study across 500 enterprise B2B SaaS platforms highlights that LLMs do not rank pages by backlink quantity alone. Instead, they extract structured brand facts, proof ladders, and verified customer testimonials into high-dimensional semantic spaces.</p>
+                       <p>To rank as the primary cited brand when users ask <em>"What is the top AI CMO platform for growth teams?"</em>, companies must publish clear, machine-readable proof nodes rather than keyword-stuffed blog posts.</p>`
+            },
+            2: {
+                category: "CASE STUDY",
+                title: "How FinTech Platform Ramp Unified 14 Marketing Channels with AI CMO Synthesis",
+                meta: "Published Aug 2026 • 8 min read • Growth Case Team",
+                metric: "4.2x Faster Strategy Cycle",
+                takeaways: [
+                    "Replaced disconnected weekly agency decks with an automated 6-analysis evidence engine.",
+                    "Shortened quarterly strategy turnaround from 21 days to under 48 hours.",
+                    "Achieved $180,000 in annualized savings on third-party auditing agency retainer costs."
+                ],
+                body: `<p>Before implementing Smark Connect, Ramp's growth team managed 14 separate marketing channels — ranging from Google Search to LinkedIn Ads and developer forums. Each agency provided fragmented spreadsheets that conflicted on customer acquisition costs and attribution.</p>
+                       <p>By connecting their main web domain to Smark Connect, Ramp established a unified <strong>Company Intelligence Foundation</strong>. The AI CMO cross-analyzed SEO health, competitor positioning, and audience objections to surface top quarterly growth levers.</p>
+                       <p>Now, specialized agents automatically generate channel-native content while maintaining 98% brand voice consistency across all output channels.</p>`
+            },
+            3: {
+                category: "PLAYBOOK",
+                title: "Commercial Intent Mining: Turning Social Signals into Qualified B2B Pipeline",
+                meta: "Published Aug 2026 • 7 min read • Smarketers Intelligence Team",
+                metric: "100-Pt Lead Scale",
+                takeaways: [
+                    "90+ point intent leads generate 4x higher response rates than cold email outreach.",
+                    "Automated 24-hour non-repeating contact filters eliminate audience outreach fatigue.",
+                    "Trigger-event contextual hooks increase prospect engagement from 3% to 22%."
+                ],
+                body: `<p>Buyers rarely state their exact purchasing intentions on contact forms. Instead, they express frustrations, alternative comparisons, and budget evaluations across public forums like Reddit, X, and LinkedIn.</p>
+                       <p>This playbook details our 100-point Lead Intent Scoring Algorithm:</p>
+                       <ul style="padding-left: 20px; margin-top: 12px;">
+                           <li><strong>ICP & Firmographic Fit (25 pts)</strong>: Matching company size, tech stack, and industry.</li>
+                           <li><strong>Buying Intent Signal (25 pts)</strong>: Explicit phrases like "looking for an alternative to X" or "budget approved".</li>
+                           <li><strong>Timing & Event Trigger (15 pts)</strong>: Leadership changes, funding announcements, or tool migrations.</li>
+                       </ul>`
+            },
+            4: {
+                category: "WHITEPAPER",
+                title: "Multi-Agent AI Architecture in Enterprise Marketing: Shared Context vs. Isolated Prompts",
+                meta: "Published July 2026 • 15 min read • AI Engineering Lab",
+                metric: "98% Voice Fidelity",
+                takeaways: [
+                    "Single-prompt AI assistants exhibit severe brand voice drift within 3 interaction turns.",
+                    "A shared 20-page site topology baseline allows 12 specialist agents to execute in sync.",
+                    "Parallel multi-model execution delivers complete 6-part strategy bundles in under 3 minutes."
+                ],
+                body: `<p>When marketing teams use standalone ChatGPT prompts, each team member inputs different context, resulting in inconsistent brand voice, contradictory messaging, and hallucinated product features.</p>
+                       <p>Smark Connect solves this with a multi-agent architectural pipeline. Every specialist agent (SEO, Content, LinkedIn, Outbound) operates on a shared vector ground truth built from your site crawl, ensuring absolute voice fidelity.</p>`
+            },
+            5: {
+                category: "CASE STUDY",
+                title: "Scaling DevTools Content from 10 to 100 Articles/Month Without Quality Loss",
+                meta: "Published July 2026 • 10 min read • DevTools Growth Story",
+                metric: "140k Organic Visits/mo",
+                takeaways: [
+                    "Identified 48 high-intent developer search terms overlooked by legacy keyword tools.",
+                    "Automated technical outline creation while preserving code sample accuracy.",
+                    "Achieved 140,000 monthly organic developer visits within 5 months."
+                ],
+                body: `<p>DevTools provider CloudScale faced a common challenge: developer audiences reject generic AI-generated content instantly. They needed deep technical accuracy at scale.</p>
+                       <p>Using Smark Connect's Content Audit & Specialist Agents, CloudScale scanned their developer documentation and mapped unaddressed technical questions. The Content Agent produced structured, code-accurate technical outlines that human engineers reviewed in minutes.</p>`
+            },
+            6: {
+                category: "WHITEPAPER",
+                title: "State of AI Crawler Access: Analyzing 10,000 Robots.txt & Schema Architectures",
+                meta: "Published June 2026 • 11 min read • Web Crawling Lab",
+                metric: "10,000 Site Audit",
+                takeaways: [
+                    "42% of SaaS companies unintentionally block AI indexing bots via misconfigured robots.txt rules.",
+                    "Sites allowing GPTBot and PerplexityBot experience 3.5x higher AI referral traffic.",
+                    "Providing JSON-LD Schema markup improves AI entity citation accuracy by 88%."
+                ],
+                body: `<p>As AI answer engines replace traditional search result pages, web accessibility for AI crawlers (GPTBot, ClaudeBot, PerplexityBot) has become a mission-critical acquisition channel.</p>
+                       <p>Our audit of 10,000 B2B domain configurations revealed widespread misconfigurations where legacy firewalls accidentally block AI indexers, rendering brands invisible inside ChatGPT and Perplexity recommendations.</p>`
+            },
+            7: {
+                category: "PLAYBOOK",
+                title: "The Executive CMO's Guide to Automated Board Decks & Publication Exports",
+                meta: "Published May 2026 • 6 min read • Executive Ops",
+                metric: "18 Hours Saved / Qtr",
+                takeaways: [
+                    "Automates multi-channel data aggregation into executive-ready PDF narrative reports.",
+                    "Generates native, editable PowerPoint (PPTX) decks complete with speaker notes.",
+                    "Saves marketing leaders 18+ hours per quarter in manual deck formatting."
+                ],
+                body: `<p>Quarterly board meetings demand high-level strategic narratives backed by rigorous data points. Manually copy-pasting numbers from 10 different dashboards into slide decks is slow and prone to errors.</p>
+                       <p>This playbook outlines how Smark Connect compiles source-linked evidence into publication-ready PDF, PPTX, and XLSX formats with a single click — keeping executives focused on high-leverage strategy.</p>`
+            },
+            8: {
+                category: "RESEARCH BENCHMARK",
+                title: "AEO vs SEO: Measuring Generative Engine Share Across Enterprise Brands",
+                meta: "Published Sept 2026 • 14 min read • Generative Intelligence Lab",
+                metric: "500 SaaS Benchmark",
+                takeaways: [
+                    "42% of commercial B2B evaluation queries return an AI Overview before organic links.",
+                    "Brands featuring structured JSON-LD entity nodes achieve 3.4x higher citation inclusion inside ChatGPT.",
+                    "Traditional organic CTR declined by 24% for generic informational keywords, while high-intent brand queries grew 18%."
+                ],
+                body: `<p>Generative Engine Optimization (GEO/AEO) is rapidly reshaping how B2B buyers discover software solutions. Rather than scrolling through blue search result links, buyers query LLMs for synthesized recommendations.</p>
+                       <p>This enterprise benchmark tracks 500 top B2B software domains across ChatGPT, Perplexity, Google AI Overviews, and Gemini. It provides actionable guidelines for structuring your site's entity architecture to maximize AI citation frequency.</p>`
+            }
+        };
+
+        function openInsightModal(id) {
+            const article = insightArticles[id];
+            if (!article) return;
+
+            const modalBody = document.getElementById('modal-body-content');
+            modalBody.innerHTML = `
+                <div class="insight-category" style="width: max-content; margin-bottom: 12px;">${article.category}</div>
+                <h2>${article.title}</h2>
+                <div class="modal-meta">
+                    <span>${article.meta}</span>
+                    <span class="insight-metric">${article.metric}</span>
+                </div>
+                <div class="modal-takeaways">
+                    <h4>Key Executive Takeaways</h4>
+                    <ul>
+                        ${article.takeaways.map(t => `<li>${t}</li>`).join('')}
+                    </ul>
+                </div>
+                <div style="font-size: 15px; line-height: 1.7; color: #c9c3be;">
+                    ${article.body}
+                </div>
+                <div style="margin-top: 36px; padding-top: 24px; border-top: 1px solid rgba(255,255,255,0.1); display: flex; justify-content: space-between; align-items: center;">
+                    <span style="font-size: 14px; color: var(--text-muted);">Want to apply these insights to your company?</span>
+                    <a href="/onboarding" class="btn btn-primary" style="height: 42px; padding: 0 20px; font-size: 13px;">Start free analysis &rarr;</a>
+                </div>
+            `;
+
+            document.getElementById('insight-modal').classList.add('active');
+            document.body.style.overflow = 'hidden';
+        }
+
+        function closeInsightModal(e) {
+            if (e && e.target !== document.getElementById('insight-modal') && !e.target.classList.contains('modal-close')) return;
+            document.getElementById('insight-modal').classList.remove('active');
+            document.body.style.overflow = '';
+        }
+
+        // Search bar form submission
+        document.getElementById('hero-search-form').addEventListener('submit', function(e) {
+            e.preventDefault();
+            let url = document.getElementById('hero-url-input').value.trim();
+            if (url) {
+                if (!/^https?:\/\//i.test(url)) {
+                    url = 'https://' + url;
+                }
+                // Clear any existing onboarding state and pass URL
+                localStorage.removeItem('smark-onboarding');
+                window.location.href = '/onboarding?url=' + encodeURIComponent(url);
+            }
+        });
+
+        function fillHeroUrl(url) {
+            const input = document.getElementById('hero-url-input');
+            if (input) {
+                input.value = url;
+                input.focus();
+            }
+        }
+
+        // FAQ Accordion Toggle Logic
+        const faqAccordionItems = document.querySelectorAll('.faq-accordion-item');
+        faqAccordionItems.forEach(item => {
+            const header = item.querySelector('.faq-accordion-header');
+            const content = item.querySelector('.faq-accordion-content');
+            header.addEventListener('click', () => {
+                const isActive = item.classList.contains('active');
+                
+                // Close all other items
+                faqAccordionItems.forEach(otherItem => {
+                    otherItem.classList.remove('active');
+                    otherItem.querySelector('.faq-accordion-content').style.maxHeight = null;
+                });
+
+                if (!isActive) {
+                    item.classList.add('active');
+                    content.style.maxHeight = content.scrollHeight + 'px';
+                }
+            });
+        });
+
+        // TECHNICAL MOTION GRAPHIC DIAGRAM CANVAS
+        const diagramCanvas = document.getElementById('tech-diagram-canvas');
+        if (diagramCanvas && !prefersReducedMotion) {
+            const ctx = diagramCanvas.getContext('2d');
+            let t = 0;
+
+            function resizeDiagramCanvas() {
+                if (diagramCanvas.parentElement) {
+                    diagramCanvas.width = diagramCanvas.parentElement.clientWidth;
+                    diagramCanvas.height = diagramCanvas.parentElement.clientHeight;
+                }
+            }
+
+            window.addEventListener('resize', resizeDiagramCanvas);
+            resizeDiagramCanvas();
+
+            const nodes = [
+                { label: "SITE CRAWLER", x: 0.16, y: 0.32, type: "input" },
+                { label: "SCHEMA ENTITY", x: 0.36, y: 0.22, type: "process" },
+                { label: "VECTOR MAP", x: 0.64, y: 0.22, type: "process" },
+                { label: "AEO INDEXING", x: 0.84, y: 0.32, type: "output" },
+                { label: "COMPETITOR RADAR", x: 0.24, y: 0.72, type: "input" },
+                { label: "AI CMO SYNTHESIS", x: 0.5, y: 0.48, type: "core" },
+                { label: "AUDIENCE INTENT", x: 0.76, y: 0.72, type: "output" }
+            ];
+
+            const connections = [
+                [0, 1], [1, 2], [2, 3],
+                [0, 5], [1, 5], [2, 5], [4, 5], [5, 6], [5, 3]
+            ];
+
+            const particles = [];
+            for (let i = 0; i < 28; i++) {
+                particles.push({
+                    connIndex: Math.floor(Math.random() * connections.length),
+                    progress: Math.random(),
+                    speed: 0.003 + Math.random() * 0.005
+                });
+            }
+
+            function drawDiagram() {
+                const w = diagramCanvas.width;
+                const h = diagramCanvas.height;
+                if (!w || !h) return;
+                ctx.clearRect(0, 0, w, h);
+                t += 0.02;
+
+                // Draw connecting line vectors
+                connections.forEach(([fromIdx, toIdx]) => {
+                    const from = nodes[fromIdx];
+                    const to = nodes[toIdx];
+                    const fx = from.x * w;
+                    const fy = from.y * h;
+                    const tx = to.x * w;
+                    const ty = to.y * h;
+
+                    const grad = ctx.createLinearGradient(fx, fy, tx, ty);
+                    grad.addColorStop(0, 'rgba(139, 44, 224, 0.25)');
+                    grad.addColorStop(0.5, 'rgba(83, 124, 255, 0.45)');
+                    grad.addColorStop(1, 'rgba(0, 200, 255, 0.25)');
+
+                    ctx.beginPath();
+                    ctx.moveTo(fx, fy);
+                    ctx.lineTo(tx, ty);
+                    ctx.strokeStyle = grad;
+                    ctx.lineWidth = 1.5;
+                    ctx.stroke();
+                });
+
+                // Draw animated data flow particles
+                particles.forEach(p => {
+                    p.progress += p.speed;
+                    if (p.progress > 1) p.progress = 0;
+
+                    const [fromIdx, toIdx] = connections[p.connIndex];
+                    const from = nodes[fromIdx];
+                    const to = nodes[toIdx];
+                    const px = from.x * w + (to.x * w - from.x * w) * p.progress;
+                    const py = from.y * h + (to.y * h - from.y * h) * p.progress;
+
+                    ctx.beginPath();
+                    ctx.arc(px, py, 2.5, 0, Math.PI * 2);
+                    ctx.fillStyle = '#ffffff';
+                    ctx.fill();
+                });
+
+                // Draw nodes
+                nodes.forEach((n, idx) => {
+                    const nx = n.x * w;
+                    const ny = n.y * h;
+                    const pulse = Math.sin(t * 1.5 + idx) * 3;
+
+                    // Node outer ring
+                    ctx.beginPath();
+                    ctx.arc(nx, ny, 14 + pulse, 0, Math.PI * 2);
+                    ctx.strokeStyle = n.type === 'core' ? 'rgba(139, 44, 224, 0.85)' : 'rgba(255, 255, 255, 0.3)';
+                    ctx.lineWidth = n.type === 'core' ? 2 : 1;
+                    ctx.stroke();
+
+                    // Node center fill
+                    ctx.beginPath();
+                    ctx.arc(nx, ny, n.type === 'core' ? 8 : 5, 0, Math.PI * 2);
+                    ctx.fillStyle = n.type === 'core' ? '#8b2ce0' : '#537cff';
+                    ctx.fill();
+
+                    // Node label
+                    ctx.font = '10px monospace';
+                    ctx.fillStyle = 'rgba(255, 255, 255, 0.8)';
+                    ctx.textAlign = 'center';
+                    ctx.fillText(n.label, nx, ny + 28);
+                });
+
+        // ==========================================================================
+        // COMMAND CENTER VERTICAL SCROLL ANIMATION PIPELINE
+        // ==========================================================================
+        (function initBlueprintScrollPipeline() {
+            const scrollTrack = document.getElementById('blueprint-scroll-track');
+            if (!scrollTrack) return;
+
+            const stages = [
+                document.getElementById('bp-stage-1'),
+                document.getElementById('bp-stage-2'),
+                document.getElementById('bp-stage-3'),
+                document.getElementById('bp-stage-4')
+            ];
+            const stepBtns = document.querySelectorAll('.bp-step-btn');
+            const statusText = document.getElementById('blueprint-scroll-status-text');
+
+            const statusMessages = [
+                "SCROLL: 01 DISJOINTED LEGACY TELEMETRY",
+                "SCROLL: 02 CRAWL FUNNEL INGESTION",
+                "SCROLL: 03 8-LAYER AI CMO SYNTHESIS",
+                "SCROLL: 04 READY-TO-EXECUTE PRIORITIES"
+            ];
+
+            function updateActiveStage(stageIndex) {
+                stages.forEach((stage, idx) => {
+                    if (stage) {
+                        if (idx === stageIndex) {
+                            stage.classList.add('active');
+                        } else {
+                            stage.classList.remove('active');
+                        }
+                    }
+                });
+
+                stepBtns.forEach((btn, idx) => {
+                    if (idx === stageIndex) {
+                        btn.classList.add('active');
+                    } else {
+                        btn.classList.remove('active');
+                    }
+                });
+
+                if (statusText && statusMessages[stageIndex]) {
+                    statusText.textContent = statusMessages[stageIndex];
+                }
+            }
+
+            // Scroll progress handler
+            function handleScrollProgress() {
+                const rect = scrollTrack.getBoundingClientRect();
+                const windowHeight = window.innerHeight;
+                const totalScrollable = rect.height - windowHeight;
+
+                if (rect.top <= 0 && rect.bottom >= windowHeight) {
+                    const currentScroll = Math.abs(rect.top);
+                    const progress = Math.min(Math.max(currentScroll / totalScrollable, 0), 0.99);
+
+                    let stageIndex = 0;
+                    if (progress < 0.25) stageIndex = 0;
+                    else if (progress < 0.50) stageIndex = 1;
+                    else if (progress < 0.75) stageIndex = 2;
+                    else stageIndex = 3;
+
+                    updateActiveStage(stageIndex);
+                } else if (rect.top > 0) {
+                    updateActiveStage(0);
+                } else if (rect.bottom < windowHeight) {
+                    updateActiveStage(3);
+                }
+            }
+
+            window.addEventListener('scroll', handleScrollProgress, { passive: true });
+            handleScrollProgress();
+
+            // Step Tab Click Handlers
+            stepBtns.forEach((btn, idx) => {
+                btn.addEventListener('click', () => {
+                    const trackRect = scrollTrack.getBoundingClientRect();
+                    const absoluteTrackTop = window.pageYOffset + trackRect.top;
+                    const targetScroll = absoluteTrackTop + (idx * (scrollTrack.offsetHeight / 4));
+                    window.scrollTo({ top: targetScroll, behavior: 'smooth' });
+                    updateActiveStage(idx);
+                });
+            });
+
+            // Blueprint URL Search Form
+            const blueprintForm = document.getElementById('blueprint-url-form');
+            if (blueprintForm) {
+                blueprintForm.addEventListener('submit', (e) => {
+                    e.preventDefault();
+                    const input = document.getElementById('blueprint-url-input');
+                    if (input && input.value) {
+                        window.location.href = `/onboarding?url=${encodeURIComponent(input.value)}`;
+                    }
+                });
+            }
+
+            // Energy Particle Flow Canvas Animation
+            const energyCanvas = document.getElementById('blueprint-energy-canvas');
+            if (energyCanvas && !prefersReducedMotion) {
+                const eCtx = energyCanvas.getContext('2d');
+                let flowParticles = [];
+
+                function resizeEnergyCanvas() {
+                    if (energyCanvas.parentElement) {
+                        energyCanvas.width = energyCanvas.parentElement.clientWidth;
+                        energyCanvas.height = energyCanvas.parentElement.clientHeight;
+                    }
+                }
+                window.addEventListener('resize', resizeEnergyCanvas);
+                resizeEnergyCanvas();
+
+                // Initialize particle streams
+                for (let i = 0; i < 35; i++) {
+                    flowParticles.push({
+                        x: Math.random(),
+                        y: Math.random(),
+                        speed: 0.002 + Math.random() * 0.004,
+                        size: 1.5 + Math.random() * 2,
+                        color: Math.random() > 0.5 ? '#00f0ff' : '#8b2ce0'
+                    });
+                }
+
+                function animateEnergyCanvas() {
+                    const w = energyCanvas.width;
+                    const h = energyCanvas.height;
+                    if (!w || !h) return;
+                    eCtx.clearRect(0, 0, w, h);
+
+                    // Draw subtle connecting laser paths across stages
+                    const stageWidth = w / 4;
+                    eCtx.strokeStyle = 'rgba(139, 44, 224, 0.15)';
+                    eCtx.lineWidth = 1;
+                    eCtx.setLineDash([6, 6]);
+
+                    for (let s = 1; s < 4; s++) {
+                        const x = s * stageWidth;
+                        eCtx.beginPath();
+                        eCtx.moveTo(x, 20);
+                        eCtx.lineTo(x, h - 20);
+                        eCtx.stroke();
+                    }
+                    eCtx.setLineDash([]);
+
+                    // Draw moving energy flow particles
+                    flowParticles.forEach(p => {
+                        p.x += p.speed;
+                        if (p.x > 1) p.x = 0;
+
+                        const px = p.x * w;
+                        const py = (p.y * 0.6 + 0.2) * h;
+
+                        eCtx.beginPath();
+                        eCtx.arc(px, py, p.size, 0, Math.PI * 2);
+                        eCtx.fillStyle = p.color;
+                        eCtx.shadowColor = p.color;
+                        eCtx.shadowBlur = 6;
+                        eCtx.fill();
+                        eCtx.shadowBlur = 0;
+                    });
+
+                    requestAnimationFrame(animateEnergyCanvas);
+                }
+                animateEnergyCanvas();
+            }
+        })();
+    </script>
+
+    <!-- Insight Article Modal Reader -->
+    <div class="modal-overlay" id="insight-modal" onclick="closeInsightModal(event)">
+        <div class="modal-content" onclick="event.stopPropagation()">
+            <button class="modal-close" onclick="closeInsightModal()">&times;</button>
+            <div class="modal-body" id="modal-body-content">
+                <!-- Dynamically populated -->
+            </div>
+        </div>
+    </div>
+</body>
+</html>

@@ -1,0 +1,40 @@
+name: Snapshot traffic stats
+
+# GitHub only retains 14 days of traffic data. This appends a daily snapshot
+# (views, clones, stars, release-asset download counts) to stats/ on a data branch.
+on:
+  schedule:
+    - cron: "23 5 * * *"
+  workflow_dispatch:
+
+permissions:
+  contents: read
+
+jobs:
+  snapshot:
+    runs-on: ubuntu-latest
+    permissions:
+      contents: write   # push snapshots to the stats branch
+    steps:
+      - uses: actions/checkout@11bd71901bbe5b1630ceea73d27597364c9af683 # v4.2.2
+        with:
+          ref: stats
+      - name: Collect and append snapshot
+        env:
+          GH_TOKEN: ${{ secrets.TRAFFIC_TOKEN || github.token }}
+          REPO: ${{ github.repository }}
+        run: |
+          mkdir -p stats
+          DAY=$(date -u +%F)
+          {
+            echo '{'
+            echo "\"date\": \"$DAY\","
+            echo '"views":';   gh api "repos/$REPO/traffic/views"  2>/dev/null || echo 'null'; echo ','
+            echo '"clones":';  gh api "repos/$REPO/traffic/clones" 2>/dev/null || echo 'null'; echo ','
+            echo '"repo":';    gh api "repos/$REPO" --jq '{stars: .stargazers_count, forks: .forks_count, watchers: .subscribers_count}'; echo ','
+            echo '"downloads":'; gh api "repos/$REPO/releases" --jq '[.[] | {tag: .tag_name, assets: [.assets[] | {name: .name, count: .download_count}]}]'
+            echo '}'
+          } | python3 -c "import json,sys; print(json.dumps(json.load(sys.stdin)))" > "stats/$DAY.json"
+          git config user.name "traffic-bot"
+          git config user.email "actions@github.com"
+          git add stats/ && git commit -m "traffic snapshot $DAY" && git push

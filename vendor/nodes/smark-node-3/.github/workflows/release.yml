@@ -1,0 +1,36 @@
+name: Build release assets
+
+on:
+  release:
+    types: [published]
+
+permissions:
+  contents: read
+
+jobs:
+  build-and-attach:
+    runs-on: ubuntu-latest
+    permissions:
+      contents: write   # upload release assets
+    steps:
+      - uses: actions/checkout@11bd71901bbe5b1630ceea73d27597364c9af683 # v4.2.2
+      - name: Release tag must match plugin manifest versions
+        run: |
+          TAG="${{ github.event.release.tag_name }}"
+          python3 -c "
+          import json, sys
+          tag = '$TAG'.lstrip('v')
+          p = json.load(open('.claude-plugin/plugin.json'))['version']
+          m = json.load(open('.claude-plugin/marketplace.json'))['plugins'][0]['version']
+          if not (tag == p == m):
+              sys.exit(f'Tag v{tag} != plugin.json {p} / marketplace.json {m} — bump the manifests before releasing, or plugin users will never see this update.')
+          print(f'versions in sync: {tag}')"
+      - name: Validate
+        run: ./scripts/validate-skills.sh
+      - name: Build all skill ZIPs and packs
+        run: ./scripts/build-packs.sh
+      - name: Attach ZIPs to the release
+        env:
+          GH_TOKEN: ${{ github.token }}
+        run: |
+          gh release upload "${{ github.event.release.tag_name }}" dist/*.zip dist/packs/*.zip --clobber

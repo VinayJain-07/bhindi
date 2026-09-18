@@ -1,0 +1,319 @@
+/* ============================================================================
+   SMARK CONNECT — Design Tokens
+   Apple-inspired visual system: premium, calm, minimal, intelligent, functional.
+   ============================================================================ */
+
+/* --------------------------------------------------------------------------
+   Font Face: Inter
+   -------------------------------------------------------------------------- */
+@font-face {
+  font-family: 'Inter';
+  font-style: normal;
+  font-weight: 100 900;
+  font-display: swap;
+  src: url('https://fonts.gstatic.com/s/inter/v18/UcCo3FwrK3iLTcviYwY.woff2') format('woff2');
+  unicode-range: U+0000-00FF, U+0131, U+0152-0153, U+02BB-02BC, U+02C6, U+02DA,
+    U+02DC, U+0304, U+0308, U+0329, U+2000-206F, U+20AC, U+2122, U+2191, U+2193,
+    U+2212, U+2215, U+FEFF, U+FFFD;
+}
+
+/* --------------------------------------------------------------------------
+   Spacing Scale (4px base unit)
+   -------------------------------------------------------------------------- */
+:root {
+  --space-0: 0px;
+  --space-px: 1px;
+  --space-0\.5: 2px;
+  --space-1: 4px;
+  --space-1\.5: 6px;
+  --space-2: 8px;
+  --space-2\.5: 10px;
+  --space-3: 12px;
+  --space-4: 16px;
+  --space-5: 20px;
+  --space-6: 24px;
+  --space-7: 28px;
+  --space-8: 32px;
+  --space-9: 36px;
+  --space-10: 40px;
+  --space-12: 48px;
+  --space-14: 56px;
+  --space-16: 64px;
+  --space-20: 80px;
+  --space-24: 96px;
+}
+
+/* --------------------------------------------------------------------------
+   Typography
+   -------------------------------------------------------------------------- */
+:root {
+  /* Font Families */
+  --font-sans: 'Inter', -apple-system, BlinkMacSystemFont, 'Segoe UI', Roboto,
+    Oxygen, Ubuntu, Cantarell, sans-serif;
+  --font-mono: 'SF Mono', 'Fira Code', 'Cascadia Code', 'JetBrains Mono',
+    Consolas, 'Courier New', monospace;
+  --font-display: var(--font-sans);
+
+  /* Font Sizes */
+  --text-2xs: 10px;
+  --text-xs: 11px;
+  --text-sm: 12px;
+  --text-base: 13px;
+  --text-md: 14px;
+  --text-lg: 16px;
+  --text-xl: 18px;
+  --text-2xl: 20px;
+  --text-3xl: 24px;
+  --text-4xl: 30px;
+  --text-5xl: 36px;
+
+  /* Font Weights */
+  --weight-light: 300;
+  --weight-normal: 400;
+  --weight-medium: 500;
+  --weight-semibold: 600;
+  --weight-bold: 700;
+  --weight-extrabold: 800;
+
+  /* Line Heights */
+  --leading-none: 1;
+  --leading-tight: 1.25;
+  --leading-snug: 1.375;
+  --leading-normal: 1.5;
+  --leading-relaxed: 1.625;
+  --leading-loose: 1.75;
+
+  /* Letter Spacing */
+  --tracking-tighter: -0.02em;
+  --tracking-tight: -0.01em;
+  --tracking-normal: 0;
+  --tracking-wide: 0.01em;
+  --tracking-wider: 0.02em;
+  --tracking-widest: 0.06em;
+}
+
+/* --------------------------------------------------------------------------
+   Corner Radii (soft, 12–20px per spec)
+   -------------------------------------------------------------------------- */
+:root {
+  --radius-xs: 4px;
+  --radius-sm: 6px;
+  --radius-md: 8px;
+  --radius-lg: 12px;
+  --radius-xl: 16px;
+  --radius-2xl: 20px;
+  --radius-3xl: 24px;
+  --radius-full: 9999px;
+}
+
+/* --------------------------------------------------------------------------
+   Transitions (180–250ms per spec)
+   -------------------------------------------------------------------------- */
+:root {
+  --ease-default: cubic-bezier(0.25, 0.1, 0.25, 1);
+  --ease-in: cubic-bezier(0.4, 0, 1, 1);
+  --ease-out: cubic-bezier(0, 0, 0.2, 1);
+  --ease-in-out: cubic-bezier(0.4, 0, 0.2, 1);
+  --ease-spring: cubic-bezier(0.34, 1.56, 0.64, 1);
+
+  --duration-instant: 100ms;
+  --duration-fast: 150ms;
+  --duration-normal: 200ms;
+  --duration-slow: 250ms;
+  --duration-slower: 350ms;
+}
+
+/* --------------------------------------------------------------------------
+   Z-Index Scale
+   -------------------------------------------------------------------------- */
+:root {
+  --z-base: 0;
+  --z-dropdown: 100;
+  --z-sticky: 200;
+  --z-overlay: 300;
+  --z-modal: 400;
+  --z-popover: 500;
+  --z-toast: 600;
+  --z-tooltip: 700;
+  --z-max: 9999;
+}
+
+/* --------------------------------------------------------------------------
+   Light Theme Colors
+   -------------------------------------------------------------------------- */
+:root {
+  /* Surfaces */
+  --bg-canvas: #fff7f3;
+  --bg-primary: #ffffff;
+  --bg-secondary: #faf9f7;
+  --bg-tertiary: #f5f3f0;
+  --bg-elevated: #ffffff;
+  --bg-sunken: #f0ede9;
+  --bg-overlay: rgba(0, 0, 0, 0.4);
+
+  /* Text */
+  --text-primary: #1a1a1a;
+  --text-secondary: #5b5b63;
+  --text-tertiary: #8e8e97;
+  --text-quaternary: #b0aeb5;
+  --text-inverse: #ffffff;
+  --text-on-accent: #ffffff;
+
+  /* Borders */
+  --border-primary: #e5e1dc;
+  --border-secondary: #efeae6;
+  --border-tertiary: #f5f2ef;
+  --border-focus: #8b2ce0;
+  --border-error: #ef4444;
+
+  /* Brand Accents */
+  --accent: #8b2ce0;
+  --accent-hover: #7a26c9;
+  --accent-active: #6b20b2;
+  --accent-subtle: rgba(139, 44, 224, 0.07);
+  --accent-muted: rgba(139, 44, 224, 0.15);
+  --violet: #7030b5;
+  --pink: #e8447a;
+  --pink-subtle: rgba(232, 68, 122, 0.08);
+
+  /* Semantic Colors */
+  --success: #16a34a;
+  --success-subtle: rgba(22, 163, 74, 0.08);
+  --success-text: #15803d;
+  --warning: #d97706;
+  --warning-subtle: rgba(217, 119, 6, 0.08);
+  --warning-text: #b45309;
+  --error: #dc2626;
+  --error-subtle: rgba(220, 38, 38, 0.08);
+  --error-text: #b91c1c;
+  --info: #2563eb;
+  --info-subtle: rgba(37, 99, 235, 0.08);
+  --info-text: #1d4ed8;
+
+  /* Shadows (warm-tinted, per brand guidelines) */
+  --shadow-xs: 0 1px 2px rgba(201, 169, 184, 0.06);
+  --shadow-sm: 0 1px 3px rgba(201, 169, 184, 0.08), 0 1px 2px rgba(201, 169, 184, 0.04);
+  --shadow-md: 0 4px 8px -2px rgba(201, 169, 184, 0.08), 0 2px 4px -2px rgba(201, 169, 184, 0.04);
+  --shadow-lg: 0 12px 24px -4px rgba(201, 169, 184, 0.1), 0 4px 8px -2px rgba(201, 169, 184, 0.04);
+  --shadow-xl: 0 20px 40px -8px rgba(201, 169, 184, 0.12), 0 8px 16px -4px rgba(201, 169, 184, 0.04);
+  --shadow-focus: 0 0 0 3px rgba(139, 44, 224, 0.2);
+  --shadow-error-focus: 0 0 0 3px rgba(220, 38, 38, 0.2);
+
+  /* Agent & Score Indicators */
+  --status-idle: #8e8e97;
+  --status-running: #8b2ce0;
+  --status-done: #16a34a;
+  --status-error: #dc2626;
+
+  --score-exceptional: #16a34a;
+  --score-high: #2563eb;
+  --score-medium: #d97706;
+  --score-low: #8e8e97;
+
+  --priority-critical: #dc2626;
+  --priority-high: #d97706;
+  --priority-medium: #2563eb;
+  --priority-low: #8e8e97;
+
+  /* Platform Colors (for social previews) */
+  --platform-instagram: #E4405F;
+  --platform-x: #000000;
+  --platform-linkedin: #0A66C2;
+  --platform-reddit: #FF4500;
+  --platform-facebook: #1877F2;
+}
+
+/* --------------------------------------------------------------------------
+   Dark Theme Colors
+   -------------------------------------------------------------------------- */
+html[data-theme="dark"] {
+  /* Surfaces */
+  --bg-canvas: #0d0c0c;
+  --bg-primary: #171515;
+  --bg-secondary: #1e1c1c;
+  --bg-tertiary: #252222;
+  --bg-elevated: #1e1c1c;
+  --bg-sunken: #111010;
+  --bg-overlay: rgba(0, 0, 0, 0.6);
+
+  /* Text */
+  --text-primary: #f4f1ee;
+  --text-secondary: #c9c3be;
+  --text-tertiary: #9c9691;
+  --text-quaternary: #6e6863;
+  --text-inverse: #1a1a1a;
+  --text-on-accent: #ffffff;
+
+  /* Borders */
+  --border-primary: #3a3533;
+  --border-secondary: #2e2a28;
+  --border-tertiary: #242120;
+  --border-focus: #b86cff;
+  --border-error: #f87171;
+
+  /* Brand Accents */
+  --accent: #b86cff;
+  --accent-hover: #c98aff;
+  --accent-active: #a855f7;
+  --accent-subtle: rgba(184, 108, 255, 0.1);
+  --accent-muted: rgba(184, 108, 255, 0.2);
+  --violet: #9350d5;
+  --pink: #ff6998;
+  --pink-subtle: rgba(255, 105, 152, 0.1);
+
+  /* Semantic Colors */
+  --success: #22c55e;
+  --success-subtle: rgba(34, 197, 94, 0.1);
+  --success-text: #4ade80;
+  --warning: #f59e0b;
+  --warning-subtle: rgba(245, 158, 11, 0.1);
+  --warning-text: #fbbf24;
+  --error: #ef4444;
+  --error-subtle: rgba(239, 68, 68, 0.1);
+  --error-text: #f87171;
+  --info: #3b82f6;
+  --info-subtle: rgba(59, 130, 246, 0.1);
+  --info-text: #60a5fa;
+
+  /* Shadows (darker, more subtle) */
+  --shadow-xs: 0 1px 2px rgba(0, 0, 0, 0.2);
+  --shadow-sm: 0 1px 3px rgba(0, 0, 0, 0.25), 0 1px 2px rgba(0, 0, 0, 0.15);
+  --shadow-md: 0 4px 8px -2px rgba(0, 0, 0, 0.3), 0 2px 4px -2px rgba(0, 0, 0, 0.15);
+  --shadow-lg: 0 12px 24px -4px rgba(0, 0, 0, 0.35), 0 4px 8px -2px rgba(0, 0, 0, 0.15);
+  --shadow-xl: 0 20px 40px -8px rgba(0, 0, 0, 0.4), 0 8px 16px -4px rgba(0, 0, 0, 0.15);
+  --shadow-focus: 0 0 0 3px rgba(184, 108, 255, 0.3);
+  --shadow-error-focus: 0 0 0 3px rgba(239, 68, 68, 0.3);
+
+  /* Agent & Score Indicators */
+  --status-idle: #9c9691;
+  --status-running: #b86cff;
+  --status-done: #22c55e;
+  --status-error: #ef4444;
+
+  --score-exceptional: #22c55e;
+  --score-high: #3b82f6;
+  --score-medium: #f59e0b;
+  --score-low: #9c9691;
+
+  --priority-critical: #ef4444;
+  --priority-high: #f59e0b;
+  --priority-medium: #3b82f6;
+  --priority-low: #9c9691;
+
+  /* Platform Colors (slightly brighter for dark bg) */
+  --platform-instagram: #F56080;
+  --platform-x: #ffffff;
+  --platform-linkedin: #2E8AE6;
+  --platform-reddit: #FF6634;
+  --platform-facebook: #4299E1;
+}
+
+/* --------------------------------------------------------------------------
+   Scrollbar Styling
+   -------------------------------------------------------------------------- */
+:root {
+  --scrollbar-width: 6px;
+  --scrollbar-track: transparent;
+  --scrollbar-thumb: var(--border-primary);
+  --scrollbar-thumb-hover: var(--text-tertiary);
+}

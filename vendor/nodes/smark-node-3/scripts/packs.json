@@ -1,0 +1,293 @@
+{
+  "_comment": "Topic pack definitions. Every pack includes brand-profile (foundation) and scheduling-and-queue (the publishing bridge, which pulls in the WoopSocial guide); packs that produce written or spoken content also include voice-builder. Overlap between packs is intentional \u2014 each pack is a complete kit for its use case. Relevant tools/integrations guides are embedded automatically at build time. Skills must match directory names under skills/.",
+  "packs": [
+    {
+      "name": "starter",
+      "title": "Social Media Starter Kit",
+      "description": "The essentials: set up your brand, find your voice, plan your themes, write your first posts, and schedule them.",
+      "skills": [
+        "brand-profile",
+        "voice-builder",
+        "audience-research",
+        "content-pillars",
+        "content-calendar",
+        "hook-writer",
+        "caption-writer",
+        "scheduling-and-queue"
+      ],
+      "tagline": "Everything you need your first week"
+    },
+    {
+      "name": "content-calendar-and-planning",
+      "title": "Content Calendar & Planning",
+      "description": "Build a living content calendar, batch a month of content in one sitting, and plan campaigns and seasonal moments.",
+      "skills": [
+        "brand-profile",
+        "voice-builder",
+        "content-pillars",
+        "content-calendar",
+        "batch-content-plan",
+        "idea-generation-and-ideation",
+        "seasonal-and-moment-marketing",
+        "campaign-and-launch-planning",
+        "scheduling-and-queue"
+      ],
+      "tagline": "Never miss a Monday"
+    },
+    {
+      "name": "writing-essentials",
+      "title": "Post Writing Essentials",
+      "description": "The core writing craft: hooks, captions, text posts, threads, carousels, and the storytelling that carries them.",
+      "skills": [
+        "brand-profile",
+        "voice-builder",
+        "writing-style-and-tone",
+        "hook-writer",
+        "caption-writer",
+        "text-post-and-microblog",
+        "thread-writer",
+        "carousel-writer",
+        "storytelling-and-narrative",
+        "scheduling-and-queue"
+      ],
+      "tagline": "Posts that sound like you, not like AI"
+    },
+    {
+      "name": "linkedin",
+      "title": "LinkedIn Growth",
+      "description": "Grow on LinkedIn: the growth system, posts that win the see-more tap, company pages, and strategic commenting.",
+      "skills": [
+        "brand-profile",
+        "voice-builder",
+        "linkedin-growth",
+        "linkedin-post-writer",
+        "linkedin-company-pages",
+        "hook-writer",
+        "reply-and-comment-writer",
+        "text-post-and-microblog",
+        "scheduling-and-queue"
+      ],
+      "tagline": "Thought leadership without the cringe"
+    },
+    {
+      "name": "instagram-and-reels",
+      "title": "Instagram & Reels Growth",
+      "description": "Instagram growth, Reels scripts that hold watch-through, Stories, carousels, and the keyword SEO layer.",
+      "skills": [
+        "brand-profile",
+        "voice-builder",
+        "instagram-growth",
+        "instagram-seo",
+        "reels-script",
+        "instagram-reels-publishing",
+        "story-writer",
+        "carousel-writer",
+        "hashtag-strategy",
+        "scheduling-and-queue"
+      ],
+      "tagline": "Own the grid, win the watch-through"
+    },
+    {
+      "name": "tiktok",
+      "title": "TikTok Growth",
+      "description": "TikTok growth, scripts built for completion rate, photo mode, publishing config, and riding trends safely.",
+      "skills": [
+        "brand-profile",
+        "voice-builder",
+        "tiktok-growth",
+        "tiktok-script",
+        "tiktok-video-publishing",
+        "tiktok-photo-mode",
+        "hook-writer",
+        "trend-jacking",
+        "scheduling-and-queue"
+      ],
+      "tagline": "Built for the FYP"
+    },
+    {
+      "name": "youtube",
+      "title": "YouTube Creator Kit",
+      "description": "Long-form and Shorts: packaging-first thinking, retention-built scripts, metadata, and thumbnails that earn the click.",
+      "skills": [
+        "brand-profile",
+        "voice-builder",
+        "youtube-long-form",
+        "youtube-shorts",
+        "youtube-publishing-and-metadata",
+        "thumbnail-design",
+        "scripting-and-storyboarding",
+        "scheduling-and-queue"
+      ],
+      "tagline": "Packaging, retention, and the click"
+    },
+    {
+      "name": "x-twitter",
+      "title": "X / Twitter Growth",
+      "tagline": "Win the timeline",
+      "description": "Grow on X: the growth system, threads that get read, sharp standalone posts, replies that borrow bigger audiences, and riding the timeline's trends.",
+      "skills": [
+        "brand-profile",
+        "voice-builder",
+        "x-growth",
+        "thread-writer",
+        "text-post-and-microblog",
+        "hook-writer",
+        "reply-and-comment-writer",
+        "trend-jacking",
+        "scheduling-and-queue"
+      ]
+    },
+    {
+      "name": "facebook",
+      "title": "Facebook Growth",
+      "tagline": "Pages, Groups, and Reels that still work",
+      "description": "Facebook that still performs in 2026: Page strategy, Groups as the organic stronghold, short-form video, captions, and community management.",
+      "skills": [
+        "brand-profile",
+        "voice-builder",
+        "facebook-strategy",
+        "facebook-groups",
+        "caption-writer",
+        "short-form-video-script",
+        "community-management",
+        "scheduling-and-queue"
+      ]
+    },
+    {
+      "name": "pinterest",
+      "title": "Pinterest Growth",
+      "tagline": "Search-driven traffic that compounds",
+      "description": "Pinterest as a search engine: growth strategy, keyword SEO, fresh-pin design, the visuals to render them, and the link-in-bio traffic path.",
+      "skills": [
+        "brand-profile",
+        "voice-builder",
+        "pinterest-growth",
+        "pinterest-seo",
+        "pinterest-pin-design",
+        "image-prompt",
+        "ideogram",
+        "link-in-bio-and-traffic",
+        "scheduling-and-queue"
+      ]
+    },
+    {
+      "name": "threads",
+      "title": "Threads Growth",
+      "tagline": "Conversation-first growth",
+      "description": "Grow on Meta's Threads: the recommendation-driven growth system, conversation-first posts, hooks, and the reply flywheel.",
+      "skills": [
+        "brand-profile",
+        "voice-builder",
+        "threads-growth",
+        "threads-post",
+        "hook-writer",
+        "text-post-and-microblog",
+        "reply-and-comment-writer",
+        "scheduling-and-queue"
+      ]
+    },
+    {
+      "name": "video-creation",
+      "title": "Video Creation Studio",
+      "description": "From script to published video: the short-form scripting craft, on-camera delivery, AI video tools, and clipping.",
+      "skills": [
+        "brand-profile",
+        "voice-builder",
+        "short-form-video-script",
+        "scripting-and-storyboarding",
+        "talking-head-and-piece-to-camera",
+        "ai-video",
+        "veo-3",
+        "runway",
+        "captions-and-clipping",
+        "thumbnail-design",
+        "scheduling-and-queue"
+      ],
+      "tagline": "Script to published video, end to end"
+    },
+    {
+      "name": "growth-and-engagement",
+      "title": "Engagement & Community",
+      "description": "The daily engagement system, community building, collabs, creator partnerships, and selling in DMs without spam.",
+      "skills": [
+        "brand-profile",
+        "voice-builder",
+        "engagement-routine",
+        "reply-and-comment-writer",
+        "community-management",
+        "collabs-and-cross-promotion",
+        "ugc-and-influencer",
+        "social-selling-and-dm",
+        "scheduling-and-queue"
+      ],
+      "tagline": "The daily system that compounds"
+    },
+    {
+      "name": "analytics-and-optimization",
+      "title": "Analytics & Optimization",
+      "description": "Honest measurement: goals that aren't vanity metrics, reporting, content audits, testing, and learning from what worked.",
+      "skills": [
+        "brand-profile",
+        "goals-and-kpis",
+        "analytics-and-reporting",
+        "content-audit",
+        "experimentation-and-ab-testing",
+        "viral-reverse-engineering",
+        "competitor-analysis",
+        "content-recycling",
+        "scheduling-and-queue"
+      ],
+      "tagline": "Numbers that matter, none that don't"
+    },
+    {
+      "name": "agency-starter",
+      "title": "Agency & Client Management",
+      "description": "Run social for clients: strategy, audience research, batch planning, cross-platform repurposing, validation, and reporting.",
+      "skills": [
+        "brand-profile",
+        "voice-builder",
+        "audience-research",
+        "social-strategy",
+        "content-calendar",
+        "batch-content-plan",
+        "cross-platform-repurposing",
+        "platform-specs-and-validation",
+        "analytics-and-reporting",
+        "scheduling-and-queue"
+      ],
+      "tagline": "Run social for clients like a machine"
+    },
+    {
+      "name": "visual-design",
+      "title": "Visual & Design",
+      "tagline": "On-brand visuals at scale",
+      "description": "A reusable brand template system plus the AI image tools to fill it: quote cards, infographics, thumbnails, and design-grade generation.",
+      "skills": [
+        "brand-profile",
+        "design-and-templates",
+        "image-prompt",
+        "nano-banana",
+        "ideogram",
+        "canva",
+        "quote-cards-and-text-graphics",
+        "infographic-and-data-viz",
+        "thumbnail-design",
+        "scheduling-and-queue"
+      ]
+    },
+    {
+      "name": "ai-voice-and-music",
+      "title": "AI Voice & Music",
+      "tagline": "Owned sound: voiceover, music, and stings",
+      "description": "Give your content a voice and a sound: AI voiceover and narration, plus owned brand music, themes, and stings \u2014 with the licensing caveats spelled out.",
+      "skills": [
+        "brand-profile",
+        "voice-builder",
+        "ai-voiceover",
+        "suno",
+        "ai-music-and-sound",
+        "scheduling-and-queue"
+      ]
+    }
+  ]
+}

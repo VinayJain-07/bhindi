@@ -1,0 +1,400 @@
+generator client {
+  provider = "prisma-client-js"
+}
+
+datasource db {
+  provider = "postgresql"
+  url      = env("DATABASE_URL")
+}
+
+enum CompanyStatus {
+  ONBOARDING
+  ACTIVE
+  ERROR
+}
+
+enum AuditStatus {
+  QUEUED
+  RUNNING
+  DONE
+  PARTIAL
+  ERROR
+}
+
+enum DocumentType {
+  PRODUCT_INFO
+  COMPANY_INTELLIGENCE
+  SEO_AUDIT
+  GEO_AUDIT
+  MARKETING_STRATEGY
+  COMPETITOR_ANALYSIS
+  AUDIENCE_ANALYSIS
+  CONTENT_AUDIT
+  DESIGN_GUIDE
+  CONTENT_STRATEGY
+  PAGE_CRO_AUDIT
+  ONBOARDING_CRO_AUDIT
+  AB_TEST_ROADMAP
+  TOPIC_CLUSTER_BLUEPRINT
+  PSEO_BLUEPRINT
+  BACKLINK_OUTREACH_BLUEPRINT
+  LOCAL_SEO_AUDIT
+  COLD_OUTBOUND_PLAYBOOK
+  EMAIL_LIFECYCLE_PLAYBOOK
+  LEAD_MAGNET_STRATEGY
+  PAID_ADS_PLAYBOOK
+  COMPETITOR_COMPARISON_PLAYBOOK
+  SOCIAL_BATCH_PLAN
+  SHORT_FORM_VIDEO_BLUEPRINT
+  BRAND_STORYTELLING_GUIDE
+  ANALYTICS_TRACKING_BLUEPRINT
+}
+
+enum AgentType {
+  AI_CMO
+  SEO
+  TECHNICAL_SEO
+  COMPETITOR
+  AUDIENCE
+  CONTENT_AUDIT
+  REDDIT
+  GEO
+  X
+  LINKEDIN
+  ARTICLES
+  UGC_VIDEOS
+  INFLUENCER
+  CAMPAIGN_PLANNER
+  INSTAGRAM
+  YOUTUBE
+  CREATIVE_VISUAL
+  UGC_INFLUENCER
+  EMAIL_NEWSLETTER
+  PAID_MEDIA
+  COMMUNITY
+  PROGRAMMATIC_SEO
+}
+
+enum RunStatus {
+  QUEUED
+  RUNNING
+  DONE
+  ERROR
+}
+
+enum LighthouseJobStatus {
+  QUEUED
+  RUNNING
+  COMPLETED
+  FAILED
+}
+
+enum ActivityKind {
+  LOGIN
+  COMPANY_CREATED
+  COMPANY_VIEWED
+}
+
+model User {
+  id              String           @id @default(cuid())
+  name            String?
+  email           String           @unique
+  passwordHash    String?
+  image           String?
+  emailVerified   DateTime?
+  llmProvider     String?
+  llmApiKeyEnc    String?
+  llmKeyPreview   String?
+  llmModel        String?
+  llmVerifiedAt   DateTime?
+  demoMode        Boolean          @default(false)
+  tokenBudget     Int              @default(2000000)
+  tokenUsed       Int              @default(0)
+  companies       Company[]
+  chatAttachments ChatAttachment[]
+  lighthouseAudits LighthouseAuditJob[]
+  activityEvents  ActivityEvent[]
+  createdAt       DateTime         @default(now())
+  updatedAt       DateTime         @updatedAt
+}
+
+model LighthouseAuditJob {
+  id            String              @id @default(cuid())
+  userId        String
+  user          User                @relation(fields: [userId], references: [id], onDelete: Cascade)
+  normalizedUrl String
+  strategy      String
+  cacheKey      String
+  status        LighthouseJobStatus @default(QUEUED)
+  cacheHit      Boolean             @default(false)
+  result        Json?
+  errorCode     String?
+  errorMessage  String?
+  startedAt     DateTime?
+  completedAt   DateTime?
+  expiresAt     DateTime?
+  createdAt     DateTime            @default(now())
+  updatedAt     DateTime            @updatedAt
+
+  @@index([userId, createdAt])
+  @@index([cacheKey, status, completedAt])
+  @@index([status, createdAt])
+}
+
+model Company {
+  id               String           @id @default(cuid())
+  userId           String
+  user             User             @relation(fields: [userId], references: [id], onDelete: Cascade)
+  name             String
+  websiteUrl       String
+  normalizedDomain String
+  status           CompanyStatus    @default(ONBOARDING)
+  category         String?
+  description      String?
+  logoUrl          String?
+  crawlStatus      AuditStatus      @default(QUEUED)
+  crawlProgress    Int              @default(0)
+  crawlStep        String           @default("Waiting to start")
+  crawlError       String?
+  lastAuditedAt    DateTime?
+  documents        Document[]
+  crawlPages       CrawlPage[]
+  pageSpeedAudits  PageSpeedAudit[]
+  auditJobs        AuditJob[]
+  agentRuns        AgentRun[]
+  agentConfigs     AgentConfig[]
+  integrations     Integration[]
+  repositories     Repository[]
+  chatSessions     ChatSession[]
+  chatAttachments  ChatAttachment[]
+  reports          Report[]
+  activityEvents   ActivityEvent[]
+  createdAt        DateTime         @default(now())
+  updatedAt        DateTime         @updatedAt
+
+  @@unique([userId, normalizedDomain])
+  @@index([userId, status])
+}
+
+model ActivityEvent {
+  id        String       @id @default(cuid())
+  userId    String
+  user      User         @relation(fields: [userId], references: [id], onDelete: Cascade)
+  companyId String?
+  company   Company?     @relation(fields: [companyId], references: [id], onDelete: SetNull)
+  kind      ActivityKind
+  detail    String?
+  createdAt DateTime     @default(now())
+
+  @@index([kind, createdAt])
+  @@index([userId, kind, createdAt])
+  @@index([companyId, kind, createdAt])
+}
+
+model AdminAuthThrottle {
+  key         String   @id
+  failedCount Int      @default(0)
+  lockedUntil DateTime?
+  updatedAt   DateTime @updatedAt
+}
+
+model AuditJob {
+  id          String      @id @default(cuid())
+  companyId   String
+  company     Company     @relation(fields: [companyId], references: [id], onDelete: Cascade)
+  status      AuditStatus @default(QUEUED)
+  progress    Int         @default(0)
+  step        String      @default("Queued")
+  error       String?
+  attempts    Int         @default(0)
+  startedAt   DateTime?
+  completedAt DateTime?
+  createdAt   DateTime    @default(now())
+  updatedAt   DateTime    @updatedAt
+
+  @@index([companyId, createdAt])
+}
+
+model CrawlPage {
+  id          String   @id @default(cuid())
+  companyId   String
+  company     Company  @relation(fields: [companyId], references: [id], onDelete: Cascade)
+  url         String
+  title       String?
+  description String?
+  content     String
+  statusCode  Int
+  wordCount   Int
+  fetchedAt   DateTime @default(now())
+
+  @@unique([companyId, url])
+}
+
+model PageSpeedAudit {
+  id            String   @id @default(cuid())
+  companyId     String
+  company       Company  @relation(fields: [companyId], references: [id], onDelete: Cascade)
+  strategy      String
+  performance   Int?
+  accessibility Int?
+  bestPractices Int?
+  seo           Int?
+  lcp           Float?
+  fcp           Float?
+  tbt           Float?
+  cls           Float?
+  statusCode    Int?
+  responseTime  Float?
+  ttfb          Float?
+  transferSize  Int?
+  source        String   @default("Python URL timing test")
+  error         String?
+  createdAt     DateTime @default(now())
+
+  @@index([companyId, createdAt])
+}
+
+model Document {
+  id              String            @id @default(cuid())
+  companyId       String
+  company         Company           @relation(fields: [companyId], references: [id], onDelete: Cascade)
+  type            DocumentType
+  title           String
+  contentMarkdown String
+  locked          Boolean           @default(false)
+  metadata        Json?
+  skillProvenance Json?
+  tokenEstimate   Int               @default(0)
+  version         Int               @default(1)
+  versions        DocumentVersion[]
+  createdAt       DateTime          @default(now())
+  updatedAt       DateTime          @updatedAt
+
+  @@unique([companyId, type])
+}
+
+model DocumentVersion {
+  id              String   @id @default(cuid())
+  documentId      String
+  document        Document @relation(fields: [documentId], references: [id], onDelete: Cascade)
+  version         Int
+  contentMarkdown String
+  editPrompt      String?
+  editMode        String   @default("focused")
+  tokenEstimate   Int      @default(0)
+  createdAt       DateTime @default(now())
+
+  @@unique([documentId, version])
+  @@index([documentId, createdAt])
+}
+
+model AgentRun {
+  id          String    @id @default(cuid())
+  companyId   String
+  company     Company   @relation(fields: [companyId], references: [id], onDelete: Cascade)
+  agentType   AgentType
+  status      RunStatus @default(QUEUED)
+  summary     String?
+  output      Json?
+  sources     Json?
+  skills      Json?
+  confidence  Int?
+  tokensUsed  Int       @default(0)
+  error       String?
+  startedAt   DateTime?
+  completedAt DateTime?
+  createdAt   DateTime  @default(now())
+
+  @@index([companyId, agentType, createdAt])
+}
+
+model AgentConfig {
+  id           String    @id @default(cuid())
+  companyId    String
+  company      Company   @relation(fields: [companyId], references: [id], onDelete: Cascade)
+  agentType    AgentType
+  enabled      Boolean   @default(true)
+  instructions String?
+  config       Json?
+  updatedAt    DateTime  @updatedAt
+
+  @@unique([companyId, agentType])
+}
+
+model Integration {
+  id              String       @id @default(cuid())
+  companyId       String
+  company         Company      @relation(fields: [companyId], references: [id], onDelete: Cascade)
+  provider        String
+  status          String       @default("not_connected")
+  accessTokenEnc  String?
+  refreshTokenEnc String?
+  expiresAt       DateTime?
+  scopes          String?
+  connectedAt     DateTime?
+  repositories    Repository[]
+
+  @@unique([companyId, provider])
+}
+
+model Repository {
+  id             String      @id @default(cuid())
+  companyId      String
+  company        Company     @relation(fields: [companyId], references: [id], onDelete: Cascade)
+  integrationId  String
+  integration    Integration @relation(fields: [integrationId], references: [id], onDelete: Cascade)
+  owner          String
+  name           String
+  fullName       String
+  defaultBranch  String
+  active         Boolean     @default(true)
+  lastPrOpenedAt DateTime?
+
+  @@unique([companyId, fullName])
+}
+
+model ChatSession {
+  id          String           @id @default(cuid())
+  companyId   String
+  company     Company          @relation(fields: [companyId], references: [id], onDelete: Cascade)
+  title       String?
+  messages    ChatMessage[]
+  attachments ChatAttachment[]
+  createdAt   DateTime         @default(now())
+  updatedAt   DateTime         @updatedAt
+}
+
+model ChatMessage {
+  id        String      @id @default(cuid())
+  sessionId String
+  session   ChatSession @relation(fields: [sessionId], references: [id], onDelete: Cascade)
+  role      String
+  content   String
+  createdAt DateTime    @default(now())
+}
+
+model ChatAttachment {
+  id         String       @id @default(cuid())
+  companyId  String
+  company    Company      @relation(fields: [companyId], references: [id], onDelete: Cascade)
+  userId     String
+  user       User         @relation(fields: [userId], references: [id], onDelete: Cascade)
+  sessionId  String?
+  session    ChatSession? @relation(fields: [sessionId], references: [id], onDelete: SetNull)
+  sourceType String
+  title      String
+  content    String
+  remembered Boolean      @default(false)
+  createdAt  DateTime     @default(now())
+}
+
+model Report {
+  id        String   @id @default(cuid())
+  companyId String
+  company   Company  @relation(fields: [companyId], references: [id], onDelete: Cascade)
+  template  String
+  format    String
+  status    String   @default("done")
+  fileUrl   String
+  createdAt DateTime @default(now())
+}

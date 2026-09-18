@@ -1,0 +1,969 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Smark Connect - Documentation</title>
+    <style>
+        @import url('https://fonts.googleapis.com/css2?family=Instrument+Serif:ital@1&family=Inter:wght@400;500;600;700;800&display=swap');
+
+        :root {
+            --bg-dark: #0a0a0f;
+            --text-light: #f8f8f8;
+            --text-muted: #a0a0ab;
+            --purple-main: #8b2ce0;
+            --purple-light: rgba(139, 44, 224, 0.3);
+            --card-bg: rgba(255, 255, 255, 0.03);
+            --card-border: rgba(255, 255, 255, 0.06);
+            --font-sans: 'Inter', sans-serif;
+            --font-serif: 'Instrument Serif', serif;
+        }
+
+        * {
+            box-sizing: border-box;
+            margin: 0;
+            padding: 0;
+        }
+
+        html {
+            scroll-behavior: smooth;
+        }
+
+        body {
+            background-color: var(--bg-dark);
+            color: var(--text-light);
+            font-family: var(--font-sans);
+            overflow-x: hidden;
+            -webkit-font-smoothing: antialiased;
+        }
+
+        /* Canvases */
+        #dot-canvas, #wave-canvas, .ambient-particles {
+            display: none !important;
+        }
+
+        .particle {
+            position: absolute;
+            background: rgba(255, 255, 255, 0.4);
+            border-radius: 50%;
+            animation: float 20s infinite linear;
+        }
+
+        @keyframes float {
+            0% { transform: translateY(100vh) translateX(0); opacity: 0; }
+            10% { opacity: 1; }
+            90% { opacity: 1; }
+            100% { transform: translateY(-10vh) translateX(100px); opacity: 0; }
+        }
+
+        /* Content Wrapper */
+        .content-wrapper {
+            position: relative;
+            z-index: 2;
+            display: flex;
+            flex-direction: column;
+            min-height: 100vh;
+        }
+
+        /* Typography */
+        h1, h2, h3 {
+            font-weight: 700;
+            line-height: 1.1;
+        }
+
+        em {
+            font-family: var(--font-serif);
+            font-style: italic;
+            font-weight: 400;
+            color: var(--purple-main);
+        }
+
+        .kicker {
+            font-size: 13px;
+            font-weight: 600;
+            letter-spacing: 0.1em;
+            text-transform: uppercase;
+            color: var(--text-muted);
+            margin-bottom: 24px;
+            display: inline-block;
+        }
+
+        p {
+            line-height: 1.7;
+            color: #c9c3be;
+            font-size: 15px;
+            margin-bottom: 16px;
+        }
+
+        @media (min-width: 768px) {
+            p {
+                font-size: 16px;
+            }
+        }
+
+        ul, ol {
+            color: #c9c3be;
+            line-height: 1.7;
+            margin-bottom: 20px;
+            padding-left: 20px;
+        }
+
+        li {
+            margin-bottom: 8px;
+        }
+
+        strong {
+            color: var(--text-light);
+        }
+
+        code {
+            font-family: monospace;
+            background: rgba(139,44,224,0.15);
+            color: var(--purple-main);
+            padding: 2px 6px;
+            border-radius: 4px;
+            font-size: 0.9em;
+        }
+
+        table {
+            width: 100%;
+            border-collapse: collapse;
+            margin-bottom: 24px;
+            text-align: left;
+        }
+
+        th, td {
+            padding: 12px 16px;
+            border-bottom: 1px solid var(--card-border);
+        }
+
+        th {
+            background: rgba(255, 255, 255, 0.05);
+            color: var(--text-light);
+            font-weight: 600;
+        }
+
+        tr:nth-child(even) {
+            background: rgba(255, 255, 255, 0.02);
+        }
+
+        /* Header */
+        header {
+            position: fixed;
+            top: 0;
+            left: 0;
+            right: 0;
+            padding: 20px 40px;
+            display: flex;
+            justify-content: space-between;
+            align-items: center;
+            z-index: 100;
+            backdrop-filter: blur(20px);
+            background: rgba(10, 10, 15, 0.6);
+            border-bottom: 1px solid var(--card-border);
+        }
+
+        .logo {
+            display: flex;
+            align-items: center;
+            gap: 12px;
+            font-weight: 700;
+            font-size: 18px;
+            text-decoration: none;
+            color: white;
+        }
+
+        .logo-mark {
+            width: 24px;
+            height: 24px;
+            border-radius: 50%;
+            background: conic-gradient(from 180deg at 50% 50%, #8b2ce0 0deg, #537cff 120deg, #00c8ff 240deg, #8b2ce0 360deg);
+        }
+
+        .header-center {
+            display: flex;
+            align-items: center;
+            gap: 32px;
+        }
+
+        .nav-links {
+            display: flex;
+            gap: 24px;
+            align-items: center;
+        }
+
+        .nav-links a {
+            color: var(--text-muted);
+            text-decoration: none;
+            font-size: 14px;
+            font-weight: 500;
+            transition: color 0.2s;
+        }
+
+        .nav-links a:hover {
+            color: var(--text-light);
+        }
+
+        .nav-links a.active {
+            color: #c084fc;
+            font-weight: 600;
+        }
+
+        @media (max-width: 768px) {
+            .nav-links {
+                display: none;
+            }
+        }
+
+        /* Buttons */
+        .btn {
+            display: inline-flex;
+            align-items: center;
+            justify-content: center;
+            height: 52px;
+            padding: 0 28px;
+            border-radius: 999px;
+            font-weight: 600;
+            font-size: 15px;
+            text-decoration: none;
+            transition: all 0.2s ease;
+            cursor: pointer;
+            border: none;
+        }
+
+        .btn-secondary {
+            background: rgba(255, 255, 255, 0.1);
+            color: white;
+            backdrop-filter: blur(10px);
+        }
+
+        .btn-secondary:hover {
+            background: rgba(255, 255, 255, 0.15);
+        }
+
+        /* Hero */
+        .hero {
+            padding: 160px 40px 80px;
+            text-align: center;
+            position: relative;
+        }
+
+        .hero h1 {
+            font-size: clamp(40px, 5vw, 64px);
+            margin-bottom: 24px;
+        }
+
+        .hero .subtitle {
+            font-size: 18px;
+            max-width: 650px;
+            margin: 0 auto;
+        }
+
+        /* Docs Layout */
+        .docs-container {
+            display: flex;
+            max-width: 1200px;
+            margin: 0 auto;
+            width: 100%;
+            padding: 0 40px 80px;
+            gap: 60px;
+            flex: 1;
+        }
+
+        /* Sidebar */
+        .sidebar {
+            width: 240px;
+            flex-shrink: 0;
+            position: sticky;
+            top: 100px;
+            height: calc(100vh - 120px);
+            overflow-y: auto;
+            padding-right: 20px;
+        }
+
+        .sidebar ul {
+            list-style: none;
+        }
+
+        .sidebar li {
+            margin-bottom: 4px;
+        }
+
+        .sidebar a {
+            display: block;
+            padding: 8px 12px;
+            color: var(--text-muted);
+            text-decoration: none;
+            font-size: 14px;
+            border-left: 2px solid transparent;
+            transition: all 0.2s;
+            border-radius: 0 4px 4px 0;
+        }
+
+        .sidebar a:hover {
+            color: var(--text-light);
+            background: rgba(255,255,255,0.02);
+        }
+
+        .sidebar a.active {
+            color: var(--purple-main);
+            border-left-color: var(--purple-main);
+            background: rgba(139, 44, 224, 0.05);
+            font-weight: 500;
+        }
+
+        /* Content */
+        .content {
+            flex: 1;
+            min-width: 0;
+        }
+
+        .docs-section {
+            margin-bottom: 40px;
+            scroll-margin-top: 120px;
+            background: var(--card-bg);
+            border: 1px solid var(--card-border);
+            border-radius: 20px;
+            padding: 40px;
+            backdrop-filter: blur(12px);
+        }
+
+        .docs-section h2 {
+            font-size: clamp(24px, 3vw, 32px);
+            margin-bottom: 24px;
+            color: var(--text-light);
+        }
+
+        .docs-section h3 {
+            font-size: 20px;
+            margin-top: 32px;
+            margin-bottom: 16px;
+            color: var(--text-light);
+        }
+
+        /* Footer */
+        footer {
+            padding: 40px 20px;
+            text-align: center;
+            border-top: 1px solid var(--card-border);
+            color: var(--text-muted);
+            font-size: 14px;
+            position: relative;
+            z-index: 2;
+        }
+
+        /* Scrollbar styles for sidebar */
+        .sidebar::-webkit-scrollbar {
+            width: 4px;
+        }
+        .sidebar::-webkit-scrollbar-track {
+            background: transparent;
+        }
+        .sidebar::-webkit-scrollbar-thumb {
+            background: rgba(255, 255, 255, 0.1);
+            border-radius: 4px;
+        }
+
+        /* Responsive */
+        @media (max-width: 768px) {
+            .docs-container {
+                flex-direction: column;
+                padding: 0 20px 40px;
+                gap: 30px;
+            }
+            .sidebar {
+                width: 100%;
+                height: auto;
+                position: static;
+                padding-right: 0;
+                overflow-x: auto;
+                white-space: nowrap;
+                border-bottom: 1px solid var(--card-border);
+                padding-bottom: 10px;
+            }
+            .sidebar ul {
+                display: flex;
+                gap: 8px;
+            }
+            .sidebar a {
+                border-left: none;
+                border-bottom: 2px solid transparent;
+                border-radius: 4px 4px 0 0;
+            }
+            .sidebar a.active {
+                border-left-color: transparent;
+                border-bottom-color: var(--purple-main);
+            }
+            .hero {
+                padding: 120px 20px 40px;
+            }
+            .docs-section {
+                padding: 24px;
+            }
+        }
+        
+        @media (prefers-reduced-motion: reduce) {
+            #dot-canvas, #wave-canvas, .ambient-particles {
+                display: none;
+            }
+            html {
+                scroll-behavior: auto;
+            }
+        }
+    </style>
+</head>
+<body>
+    <canvas id="dot-canvas"></canvas>
+    <canvas id="wave-canvas"></canvas>
+    
+    <div class="ambient-particles" id="particles">
+        <!-- Injected via JS -->
+    </div>
+
+    <div class="content-wrapper">
+        <header id="header">
+            <a href="/" class="logo">
+                <div class="logo-mark"></div>
+                Smark Connect
+            </a>
+            <div class="nav-links">
+                <a href="/#features">Features</a>
+                <a href="/#insights">Insights</a>
+                <a href="/#comparison">Compare</a>
+                <a href="/pricing">Pricing</a>
+                <a href="/docs" class="active">Docs</a>
+            </div>
+            <div style="display: flex; align-items: center; gap: 12px;">
+                <a href="/login" class="btn btn-secondary" style="height: 38px; padding: 0 18px; font-size: 13px; border-radius: 12px;">Sign In</a>
+                <a href="/onboarding" class="btn btn-primary" style="height: 38px; padding: 0 18px; font-size: 13px; border-radius: 12px; background: #9333ea; color: white; border: 1px solid #a855f7;">Get Started</a>
+            </div>
+        </header>
+
+        <section class="hero">
+            <span class="kicker">DOCUMENTATION</span>
+            <h1>Learn how to use<br><em>Smark Connect.</em></h1>
+            <p class="subtitle">From first setup to advanced workflows &mdash; everything you need to get the most out of your AI CMO.</p>
+        </section>
+
+        <div class="docs-container">
+            <aside class="sidebar">
+                <ul id="toc">
+                    <li><a href="#getting-started">1. Getting Started</a></li>
+                    <li><a href="#setting-up">2. Setting Up Your Workspace</a></li>
+                    <li><a href="#understanding-reports">3. Understanding Your Reports</a></li>
+                    <li><a href="#working-with-ai-cmo">4. Working with the AI CMO</a></li>
+                    <li><a href="#specialist-agents">5. Specialist Agents</a></li>
+                    <li><a href="#exporting-sharing">6. Exporting &amp; Sharing</a></li>
+                    <li><a href="#live-mining">7. Live Conversation Mining</a></li>
+                    <li><a href="#analytics-lighthouse">8. Analytics &amp; Lighthouse</a></li>
+                    <li><a href="#token-management">9. Token Management</a></li>
+                    <li><a href="#faqs">10. FAQs &amp; Troubleshooting</a></li>
+                </ul>
+            </aside>
+
+            <main class="content">
+                <section id="getting-started" class="docs-section">
+                    <h2>Getting Started</h2>
+                    <p>Smark Connect is an AI-powered marketing intelligence platform that turns your company's website into a full marketing command center. Here's what you need to know before diving in.</p>
+                    
+                    <h3>Prerequisites:</h3>
+                    <ul>
+                        <li>A public company website URL</li>
+                        <li>An API key from one of our supported providers: OpenAI, Anthropic, Google Gemini, or OpenRouter</li>
+                        <li>A modern web browser (Chrome, Firefox, Safari, or Edge)</li>
+                    </ul>
+
+                    <h3>Quick Start:</h3>
+                    <ol>
+                        <li>Create your account at the sign-up page</li>
+                        <li>Connect your AI provider and paste your API key</li>
+                        <li>Enter your company website URL</li>
+                        <li>Wait 2&ndash;3 minutes for your first analysis to complete</li>
+                        <li>Explore your dashboard and start asking your AI CMO questions</li>
+                    </ol>
+                </section>
+
+                <section id="setting-up" class="docs-section">
+                    <h2>Setting Up Your Workspace</h2>
+                    
+                    <h3>Connecting an AI Provider:</h3>
+                    <p>During onboarding, you'll choose from four supported AI providers. Each provider has different strengths:</p>
+                    <ul>
+                        <li><strong>OpenAI</strong> &mdash; Best for teams already using ChatGPT or GPT-4. Reliable, fast, widely supported.</li>
+                        <li><strong>Anthropic</strong> &mdash; Excellent for nuanced analysis and long-form strategy documents. Claude excels at structured reasoning.</li>
+                        <li><strong>Google Gemini</strong> &mdash; Strong multimodal capabilities and competitive pricing. Good for teams in the Google ecosystem.</li>
+                        <li><strong>OpenRouter</strong> &mdash; Access 100+ models through a single API key. Ideal for teams that want flexibility or cost optimization.</li>
+                    </ul>
+                    <p>Your API key is encrypted with AES-256 at rest and never exposed to your browser. You can change providers at any time from the settings page.</p>
+
+                    <h3>Adding Companies:</h3>
+                    <p>You can add multiple company workspaces. For each company, Smark Connect:</p>
+                    <ul>
+                        <li>Crawls up to 20 public pages</li>
+                        <li>Captures HTTP response timing and network baselines</li>
+                        <li>Extracts clean text, meta tags, heading structure, and link topology</li>
+                        <li>Builds a shared evidence foundation that all analyses reference</li>
+                    </ul>
+                </section>
+
+                <section id="understanding-reports" class="docs-section">
+                    <h2>Understanding Your Reports</h2>
+                    <p>Every company workspace produces six interconnected analyses. They run concurrently after the initial crawl, and each builds on the same evidence base.</p>
+
+                    <h3>The Six Core Reports:</h3>
+                    <ol>
+                        <li><strong>Company Intelligence</strong> &mdash; Your offer stack, market positioning, proof ladder, brand voice, and competitive advantages. This is the foundation document that informs all other analyses.</li>
+                        <li><strong>SEO Audit</strong> &mdash; Technical health, on-page optimization scores, crawl architecture assessment, and search experience optimization. Covers everything from meta tags to internal link structure.</li>
+                        <li><strong>GEO &amp; AI Visibility</strong> &mdash; How visible your brand is to AI answer engines like ChatGPT, Perplexity, and Google AI Overviews. Includes entity clarity scoring, schema markup analysis, and citation potential.</li>
+                        <li><strong>Competitor Analysis</strong> &mdash; Identifies your real competitors (not just the ones you think they are). Delivers SWOT analysis, positioning whitespace, and content gap opportunities.</li>
+                        <li><strong>Audience Analysis</strong> &mdash; Deep ICP profiling, buying job identification, objection mapping, and voice-of-customer insights derived from your public footprint.</li>
+                        <li><strong>Content Audit &amp; Strategy</strong> &mdash; Inventory of existing content, pillar topic mapping, editorial gap analysis, and a prioritized content roadmap.</li>
+                    </ol>
+
+                    <h3>Working with Reports:</h3>
+                    <ul>
+                        <li><strong>In-app reading view</strong>: Every report renders in a clean, professional layout with table of contents navigation</li>
+                        <li><strong>Focused editing</strong>: Edit specific sections with targeted AI prompts, using fewer tokens than a full regeneration</li>
+                        <li><strong>Full regeneration</strong>: Re-run the complete analysis pipeline with fresh evidence when your site changes significantly</li>
+                        <li><strong>Version history</strong>: Every edit and regeneration is versioned in the database</li>
+                    </ul>
+                </section>
+
+                <section id="working-with-ai-cmo" class="docs-section">
+                    <h2>Working with the AI CMO</h2>
+                    <p>Your AI CMO is the connective tissue between all six analyses. It reads every report, understands the relationships between findings, and helps you prioritize.</p>
+
+                    <h3>What to ask your AI CMO:</h3>
+                    <ul>
+                        <li>"Where should we focus this quarter?"</li>
+                        <li>"What are our three highest-leverage opportunities?"</li>
+                        <li>"How does our SEO gap connect to our competitor positioning?"</li>
+                        <li>"Draft a 90-day action plan based on our findings"</li>
+                        <li>"What content should we create first based on our audience research?"</li>
+                    </ul>
+
+                    <h3>How it works:</h3>
+                    <p>The AI CMO uses a two-phase synthesis methodology. First, it applies framework-level marketing reasoning. Then, it grounds every recommendation in your specific company evidence. This means you get strategic direction that's genuinely tailored to your situation &mdash; not generic advice.</p>
+
+                    <h3>Tips for better results:</h3>
+                    <ul>
+                        <li>Be specific about timeframes and constraints</li>
+                        <li>Reference specific reports: "Based on the competitor analysis..."</li>
+                        <li>Ask follow-up questions to drill deeper</li>
+                        <li>Use the focused edit mode when you want to refine a specific section</li>
+                    </ul>
+                </section>
+
+                <section id="specialist-agents" class="docs-section">
+                    <h2>Specialist Agents</h2>
+                    <p>Beyond the AI CMO, you have access to 12+ specialist agents. Each agent is grounded in your company truth &mdash; they read from the same foundation, so there's no context gap.</p>
+
+                    <h3>Available Agents:</h3>
+                    <div style="overflow-x: auto;">
+                        <table>
+                            <thead>
+                                <tr>
+                                    <th>Agent</th>
+                                    <th>What It Does</th>
+                                </tr>
+                            </thead>
+                            <tbody>
+                                <tr>
+                                    <td>SEO Agent</td>
+                                    <td>Technical fixes, on-page optimization, structured data recommendations</td>
+                                </tr>
+                                <tr>
+                                    <td>GEO Agent</td>
+                                    <td>AI visibility improvements, citation optimization, entity clarity</td>
+                                </tr>
+                                <tr>
+                                    <td>Content Agent</td>
+                                    <td>Topic ideation, outline creation, editorial planning</td>
+                                </tr>
+                                <tr>
+                                    <td>X (Twitter) Agent</td>
+                                    <td>Post opportunities, thread builders, contrarian takes in your brand voice</td>
+                                </tr>
+                                <tr>
+                                    <td>LinkedIn Agent</td>
+                                    <td>Thought leadership posts, founder series, carousel documents</td>
+                                </tr>
+                                <tr>
+                                    <td>Reddit Agent</td>
+                                    <td>Subreddit research, commercial intent discovery, authentic reply drafts</td>
+                                </tr>
+                                <tr>
+                                    <td>Instagram Agent</td>
+                                    <td>Carousel outlines, Reel storyboards, Story sequences</td>
+                                </tr>
+                                <tr>
+                                    <td>Email Agent</td>
+                                    <td>Newsletter planning, drip sequence design, subject line optimization</td>
+                                </tr>
+                                <tr>
+                                    <td>YouTube Agent</td>
+                                    <td>Video concept development, script outlines, thumbnail strategies</td>
+                                </tr>
+                                <tr>
+                                    <td>Creative Agent</td>
+                                    <td>Visual direction, brand asset recommendations, design briefs</td>
+                                </tr>
+                                <tr>
+                                    <td>Competitor Agent</td>
+                                    <td>Market movement tracking, feature comparison matrices, positioning updates</td>
+                                </tr>
+                                <tr>
+                                    <td>Outbound Agent</td>
+                                    <td>Prospect research, personalized outreach hooks, cold email sequences</td>
+                                </tr>
+                            </tbody>
+                        </table>
+                    </div>
+
+                    <h3>How agents work:</h3>
+                    <p>Each agent runs against your company foundation and the relevant core reports. When you ask the SEO agent for recommendations, it already knows your technical issues, competitor gaps, and content strategy. No briefing required.</p>
+                </section>
+
+                <section id="exporting-sharing" class="docs-section">
+                    <h2>Exporting &amp; Sharing</h2>
+                    <p>Every analysis can be exported in three publication-ready formats. All exports are branded, sourced, and ready for stakeholder consumption.</p>
+
+                    <h3>Export Formats:</h3>
+                    <ul>
+                        <li><strong>PDF</strong> &mdash; Board-ready narrative reports with data visualizations, cover pages, and sourced findings. Generated via WeasyPrint with at least 30% visualized analysis sections. Uses the Smarketers cream, blush, violet, and Arial visual system.</li>
+                        <li><strong>PPTX</strong> &mdash; Editable PowerPoint presentations with conclusion-led slides, stat cards, and speaker notes. Built with PptxGenJS for native compatibility with Microsoft PowerPoint and Google Slides.</li>
+                        <li><strong>XLSX</strong> &mdash; Operational workbooks with action trackers, scoring matrices, auto-calculated formulas, and validation dropdowns. Generated only when the report contains operational value (schedules, scores, ownership data).</li>
+                    </ul>
+
+                    <h3>Export scope:</h3>
+                    <ul>
+                        <li><strong>Single report</strong>: Download artifacts for one specific analysis</li>
+                        <li><strong>Company-wide</strong>: Generate a comprehensive export bundle across all reports</li>
+                    </ul>
+                </section>
+
+                <section id="live-mining" class="docs-section">
+                    <h2>Live Conversation Mining</h2>
+                    <p>The conversation miner continuously scans public discussions on Reddit, X, LinkedIn, and the broader web to surface high-intent prospects.</p>
+
+                    <h3>How scoring works:</h3>
+                    <p>Each prospect is scored on a 100-point scale:</p>
+                    <ul>
+                        <li>ICP &amp; Firmographic Fit (25 points)</li>
+                        <li>Buying Intent Signal (25 points)</li>
+                        <li>Timing &amp; Event Trigger (15 points)</li>
+                        <li>Evidence Strength (10 points)</li>
+                        <li>Contact Quality (5 points)</li>
+                    </ul>
+
+                    <h3>Priority tiers:</h3>
+                    <ul>
+                        <li>90+ points: Priority lead</li>
+                        <li>75&ndash;89 points: Strong lead</li>
+                        <li>Below 75: Qualification required</li>
+                    </ul>
+
+                    <h3>What you get for each prospect:</h3>
+                    <ul>
+                        <li>Why you should target them (tailored business rationale)</li>
+                        <li>Observable trigger event</li>
+                        <li>Verbatim quote evidence from the source</li>
+                        <li>Contact details with confidence rating</li>
+                        <li>Pre-drafted personalized outreach hook</li>
+                    </ul>
+                    <p>The miner enforces a 24-hour non-repeating window and stores seen identifiers to prevent duplicates.</p>
+                </section>
+
+                <section id="analytics-lighthouse" class="docs-section">
+                    <h2>Analytics &amp; Lighthouse</h2>
+                    <p>The Analytics pane automatically runs your company website through a self-hosted Lighthouse audit covering Performance, Accessibility, SEO, and Best Practices.</p>
+
+                    <h3>What's measured:</h3>
+                    <ul>
+                        <li>Core Web Vitals: FCP, LCP, TBT, CLS</li>
+                        <li>Performance score (0&ndash;100)</li>
+                        <li>Accessibility score (0&ndash;100)</li>
+                        <li>Best Practices score (0&ndash;100)</li>
+                        <li>SEO score (0&ndash;100)</li>
+                    </ul>
+
+                    <h3>Additional analytics:</h3>
+                    <ul>
+                        <li>Internal link structure and topology</li>
+                        <li>Server response timing and TTFB</li>
+                        <li>Robots.txt directives for AI bots</li>
+                        <li>Schema entity extraction</li>
+                        <li>Mobile viewport readiness</li>
+                    </ul>
+                    <p>Audits run locally in Chromium &mdash; no external service dependency. Results are cached for 24 hours and stored in the database.</p>
+                </section>
+
+                <section id="token-management" class="docs-section">
+                    <h2>Token Management</h2>
+                    <p>Every workspace comes with a 2,000,000 token budget. Here's how it breaks down:</p>
+
+                    <h3>Typical usage:</h3>
+                    <ul>
+                        <li>Full company scan: 180,000&ndash;300,000 tokens</li>
+                        <li>Focused section edit: 5,000&ndash;15,000 tokens</li>
+                        <li>AI CMO conversation: 2,000&ndash;8,000 tokens per message</li>
+                        <li>Agent task: 10,000&ndash;30,000 tokens</li>
+                    </ul>
+
+                    <h3>Planning guidance:</h3>
+                    <ul>
+                        <li>Plan for 6&ndash;8 complete company scans on the default budget</li>
+                        <li>Focused edits are substantially cheaper than full regenerations</li>
+                        <li>The dashboard tracks actual token usage across all companies</li>
+                        <li>When approaching the limit, focus on edits rather than full re-runs</li>
+                    </ul>
+                </section>
+
+                <section id="faqs" class="docs-section">
+                    <h2>FAQs &amp; Troubleshooting</h2>
+
+                    <h3>Common Questions:</h3>
+                    <ul>
+                        <li><strong>"My analysis is taking longer than expected"</strong> &rarr; Large websites with many pages take longer to crawl. The first document typically lands within 3 minutes, with remaining reports following over the next 5&ndash;10 minutes.</li>
+                        <li><strong>"Can I re-run an analysis?"</strong> &rarr; Yes. Use the full regeneration option to re-crawl your website and rebuild the analysis from fresh evidence.</li>
+                        <li><strong>"My API key isn't validating"</strong> &rarr; Ensure you're using the correct key format for your chosen provider. The key must support long structured responses. Check that your account has available credits.</li>
+                        <li><strong>"Can I use the platform for client work?"</strong> &rarr; Absolutely. Add each client as a separate company workspace. Exports are presentation-ready and can be white-labeled with your branding.</li>
+                        <li><strong>"Is my data shared across users?"</strong> &rarr; No. Each workspace is isolated. Your API keys, company data, and generated analyses are private to your account.</li>
+                        <li><strong>"What happens when I reach my token limit?"</strong> &rarr; You'll receive a warning as you approach the budget ceiling. Upgrade or wait for the next billing cycle to continue running new analyses.</li>
+                    </ul>
+                </section>
+            </main>
+        </div>
+
+        <footer>
+            &copy; 2026 Smark Connect. AI-Powered Marketing Intelligence.
+        </footer>
+    </div>
+
+    <script>
+        // Check for reduced motion preference
+        const prefersReducedMotion = window.matchMedia('(prefers-reduced-motion: reduce)').matches;
+
+        if (!prefersReducedMotion) {
+            // DOT CANVAS
+            const dotCanvas = document.getElementById('dot-canvas');
+            const dCtx = dotCanvas.getContext('2d');
+            
+            let mouseX = -1000;
+            let mouseY = -1000;
+            
+            window.addEventListener('mousemove', (e) => {
+                mouseX = e.clientX;
+                mouseY = e.clientY;
+            });
+
+            function resizeDotCanvas() {
+                dotCanvas.width = window.innerWidth;
+                dotCanvas.height = window.innerHeight;
+            }
+
+            window.addEventListener('resize', () => {
+                resizeDotCanvas();
+                resizeWaveCanvas();
+            });
+
+            function drawDots() {
+                dCtx.clearRect(0, 0, dotCanvas.width, dotCanvas.height);
+                
+                const spacing = 30; // 28-32px spacing
+                
+                for (let x = 0; x < dotCanvas.width; x += spacing) {
+                    for (let y = 0; y < dotCanvas.height; y += spacing) {
+                        const dx = x - mouseX;
+                        const dy = y - mouseY;
+                        const dist = Math.sqrt(dx * dx + dy * dy);
+                        
+                        let radius = 1.2;
+                        let color = 'rgba(255, 255, 255, 0.15)';
+                        
+                        if (dist < 120) {
+                            // Scale based on proximity
+                            const factor = 1 - (dist / 120);
+                            radius = 1.2 + (1.3 * factor); // up to 2.5px
+                            color = `rgba(139, 44, 224, ${0.15 + (0.35 * factor)})`; 
+                        }
+                        
+                        dCtx.beginPath();
+                        dCtx.arc(x, y, radius, 0, Math.PI * 2);
+                        dCtx.fillStyle = color;
+                        dCtx.fill();
+                    }
+                }
+                
+                requestAnimationFrame(drawDots);
+            }
+
+            // WAVE CANVAS
+            const waveCanvas = document.getElementById('wave-canvas');
+            const wCtx = waveCanvas.getContext('2d');
+            let waveTime = 0;
+
+            function resizeWaveCanvas() {
+                waveCanvas.width = window.innerWidth;
+                waveCanvas.height = window.innerHeight;
+            }
+
+            function drawWaves() {
+                wCtx.clearRect(0, 0, waveCanvas.width, waveCanvas.height);
+                waveTime += 0.006;
+                const w = waveCanvas.width;
+                const h = waveCanvas.height;
+                
+                const waves = [
+                    { // Primary left sweep — bold, fast
+                    startX: -w * 0.15,
+                    startY: h * 1.15,
+                    points: [
+                        { cpx1: w * 0.02, cpy1: h * 0.85, cpx2: w * 0.12, cpy2: h * 0.42, ex: w * 0.32, ey: h * 0.3 },
+                        { cpx1: w * 0.42, cpy1: h * 0.22, cpx2: w * 0.55, cpy2: h * 0.28, ex: w * 0.72, ey: h * 0.45 },
+                        { cpx1: w * 0.82, cpy1: h * 0.55, cpx2: w * 0.92, cpy2: h * 0.7, ex: w * 1.15, ey: h * 0.8 },
+                    ],
+                    width: 220,
+                    colors: ['rgba(100,30,220,0)','rgba(130,50,240,0.5)','rgba(90,100,255,0.4)','rgba(30,160,255,0.25)','rgba(0,220,255,0.1)','rgba(0,200,255,0)'],
+                    phase: 0, speed: 1.4,
+                    },
+                    { // Primary right sweep — bold, fast
+                    startX: w * 1.15,
+                    startY: h * 1.15,
+                    points: [
+                        { cpx1: w * 0.98, cpy1: h * 0.82, cpx2: w * 0.88, cpy2: h * 0.4, ex: w * 0.68, ey: h * 0.3 },
+                        { cpx1: w * 0.58, cpy1: h * 0.24, cpx2: w * 0.45, cpy2: h * 0.3, ex: w * 0.28, ey: h * 0.48 },
+                        { cpx1: w * 0.18, cpy1: h * 0.58, cpx2: w * 0.08, cpy2: h * 0.72, ex: -w * 0.12, ey: h * 0.85 },
+                    ],
+                    width: 240,
+                    colors: ['rgba(100,30,220,0)','rgba(139,44,224,0.45)','rgba(83,124,255,0.35)','rgba(20,140,250,0.2)','rgba(0,200,255,0.08)','rgba(0,200,255,0)'],
+                    phase: 1.2, speed: 1.1,
+                    },
+                    { // Inner left — secondary, thinner
+                    startX: -w * 0.05,
+                    startY: h * 1.05,
+                    points: [
+                        { cpx1: w * 0.1, cpy1: h * 0.78, cpx2: w * 0.2, cpy2: h * 0.48, ex: w * 0.38, ey: h * 0.38 },
+                        { cpx1: w * 0.48, cpy1: h * 0.32, cpx2: w * 0.58, cpy2: h * 0.36, ex: w * 0.75, ey: h * 0.52 },
+                    ],
+                    width: 120,
+                    colors: ['rgba(160,60,255,0)','rgba(160,60,255,0.35)','rgba(100,120,255,0.2)','rgba(160,60,255,0)'],
+                    phase: 2.5, speed: 1.8,
+                    },
+                    { // Inner right — secondary, thinner
+                    startX: w * 1.05,
+                    startY: h * 1.05,
+                    points: [
+                        { cpx1: w * 0.9, cpy1: h * 0.75, cpx2: w * 0.8, cpy2: h * 0.46, ex: w * 0.62, ey: h * 0.36 },
+                        { cpx1: w * 0.52, cpy1: h * 0.3, cpx2: w * 0.42, cpy2: h * 0.38, ex: w * 0.25, ey: h * 0.55 },
+                    ],
+                    width: 100,
+                    colors: ['rgba(120,40,240,0)','rgba(120,40,240,0.3)','rgba(70,110,255,0.18)','rgba(120,40,240,0)'],
+                    phase: 3.8, speed: 2.0,
+                    },
+                    { // Deep center glow — wide, slow
+                    startX: w * 0.15,
+                    startY: h * 1.3,
+                    points: [
+                        { cpx1: w * 0.25, cpy1: h * 0.65, cpx2: w * 0.38, cpy2: h * 0.35, ex: w * 0.5, ey: h * 0.32 },
+                        { cpx1: w * 0.62, cpy1: h * 0.3, cpx2: w * 0.75, cpy2: h * 0.55, ex: w * 0.85, ey: h * 1.3 },
+                    ],
+                    width: 300,
+                    colors: ['rgba(139,44,224,0)','rgba(139,44,224,0.18)','rgba(100,80,240,0.12)','rgba(139,44,224,0)'],
+                    phase: 5, speed: 0.7,
+                    },
+                ];
+
+                waves.forEach(wave => {
+                    const t = waveTime * wave.speed + wave.phase;
+                    const wobbleA = Math.sin(t) * 55;
+                    const wobbleB = Math.cos(t * 0.7) * 40;
+                    const wobbleC = Math.sin(t * 1.3) * 25;
+                    
+                    wCtx.beginPath();
+                    wCtx.moveTo(wave.startX, wave.startY + wobbleA * 0.4);
+                    
+                    wave.points.forEach((p, i) => {
+                        const oA = Math.sin(t + i * 1.1) * wobbleA;
+                        const oB = Math.cos(t * 0.8 + i * 0.9) * wobbleB;
+                        const oC = Math.sin(t * 1.5 + i * 1.4) * wobbleC;
+                        wCtx.bezierCurveTo(
+                            p.cpx1 + oB + oC * 0.5, p.cpy1 + oA,
+                            p.cpx2 - oA + oC, p.cpy2 + oB * 0.8,
+                            p.ex + oA * 0.4 - oC * 0.3, p.ey - oB * 0.6
+                        );
+                    });
+                    
+                    const gradient = wCtx.createLinearGradient(0, h, w, 0);
+                    wave.colors.forEach((c, i) => gradient.addColorStop(i / (wave.colors.length - 1), c));
+                    
+                    wCtx.strokeStyle = gradient;
+                    wCtx.lineWidth = wave.width;
+                    wCtx.lineCap = 'round';
+                    wCtx.lineJoin = 'round';
+                    wCtx.stroke();
+                });
+                
+                requestAnimationFrame(drawWaves);
+            }
+
+            // Initialize canvases
+            resizeDotCanvas();
+            resizeWaveCanvas();
+            drawDots();
+            drawWaves();
+
+            // Parallax on mouse move for waves
+            window.addEventListener('mousemove', (e) => {
+                const x = (e.clientX / window.innerWidth - 0.5) * 3; // 2-3% offset
+                const y = (e.clientY / window.innerHeight - 0.5) * 3;
+                waveCanvas.style.transform = `translate(${x}%, ${y}%)`;
+            });
+
+            // Add particles
+            const particlesContainer = document.getElementById('particles');
+            for(let i = 0; i < 8; i++) {
+                const particle = document.createElement('div');
+                particle.className = 'particle';
+                const size = Math.random() * 4 + 2;
+                particle.style.width = `${size}px`;
+                particle.style.height = `${size}px`;
+                particle.style.left = `${Math.random() * 100}vw`;
+                particle.style.animationDuration = `${Math.random() * 15 + 15}s`;
+                particle.style.animationDelay = `${Math.random() * -20}s`;
+                particlesContainer.appendChild(particle);
+            }
+        }
+
+        // Intersection Observer for Sidebar highlighting
+        document.addEventListener('DOMContentLoaded', () => {
+            const sections = document.querySelectorAll('.docs-section');
+            const navLinks = document.querySelectorAll('.sidebar a');
+
+            const observerOptions = {
+                root: null,
+                rootMargin: '-120px 0px -60% 0px',
+                threshold: 0
+            };
+
+            const observer = new IntersectionObserver((entries) => {
+                entries.forEach(entry => {
+                    if (entry.isIntersecting) {
+                        navLinks.forEach(link => {
+                            link.classList.remove('active');
+                            if (link.getAttribute('href') === '#' + entry.target.id) {
+                                link.classList.add('active');
+                            }
+                        });
+                    }
+                });
+            }, observerOptions);
+
+            sections.forEach(section => {
+                observer.observe(section);
+            });
+        });
+
+    </script>
+</body>
+</html>
