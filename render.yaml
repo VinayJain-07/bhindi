@@ -1,9 +1,9 @@
-﻿services:
+services:
   - type: web
     name: smark-connect
     runtime: docker
     dockerfilePath: ./Dockerfile
-    plan: starter
+    plan: free
     healthCheckPath: /api/health
     envVars:
       - key: NODE_ENV
